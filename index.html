@@ -1,455 +1,429 @@
 <!DOCTYPE html>
-<html lang="en" data-color-scheme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StudyHub – Engineering 3rd Year Planner</title>
-    <link rel="stylesheet" href="style.css" />
-    <!-- Quill rich-text editor styles -->
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="app">
-      <!-- Loading state -->
-      <div id="loading" class="loading-screen">
-        <p>Loading StudyHub...</p>
-      </div>
-      
-      <!-- Main app (hidden until Alpine loads) -->
-      <div x-data="studyHubApp()" x-init="init()" x-cloak class="app-container flex">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyHub</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Quill Rich Text Editor -->
+    <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
+    
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Scripts -->
+    <!-- Alpine Plugins -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/morph@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/sort@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine Core -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.0/dayjs.min.js"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+
+<body x-data="studyHubApp()" x-init="init()" :class="{ 'dark-mode': darkMode }">
+    <div class="app-layout" x-cloak>
         <!-- Sidebar -->
-        <aside
-          class="sidebar flex flex-col gap-16 px-16 py-16"
-          :class="{ 'sidebar--collapsed': sidebarCollapsed }"
-        >
-          <h2 class="text-logo" @click="navigate('#/dashboard')">StudyHub</h2>
-          <nav class="flex flex-col gap-8" role="navigation" aria-label="Main">
-            <button
-              class="btn btn--secondary"
-              :class="{ 'btn--primary': route==='dashboard' }"
-              @click="navigate('#/dashboard')"
-            >Dashboard</button>
-            <template x-for="c in data.courses" :key="c.id">
-              <button
-                class="btn btn--secondary text-start"
-                :class="{ 'btn--primary': route==='course' && currentCourse?.id===c.id }"
-                @click="navigate('#/course/'+c.id)"
-              >
-                <span x-text="c.code"></span>
-              </button>
-            </template>
-            <button
-              class="btn btn--secondary"
-              :class="{ 'btn--primary': route==='quickrevision' }"
-              @click="navigate('#/quickrevision')"
-            >Quick Revision</button>
-            <button
-              class="btn btn--secondary"
-              :class="{ 'btn--primary': route==='settings' }"
-              @click="navigate('#/settings')"
-            >Settings</button>
-          </nav>
-          <button
-            class="btn btn--outline mt-auto"
-            @click="sidebarCollapsed = !sidebarCollapsed"
-            :aria-expanded="!sidebarCollapsed"
-          >☰</button>
-        </aside>
-
-        <!-- Main content -->
-        <main class="main flex-1 container py-16" tabindex="-1">
-          <!-- Dashboard -->
-          <section x-show="route==='dashboard'">
-            <h1 class="mb-16">Dashboard</h1>
-            <div
-              class="grid gap-16"
-              style="grid-template-columns: repeat(auto-fill, minmax(250px,1fr));"
-            >
-              <template x-for="course in data.courses" :key="course.id">
-                <div class="card">
-                  <div class="card__body flex flex-col gap-8">
-                    <h3 x-text="course.name"></h3>
-                    <p>
-                      <strong>Exam:</strong>
-                      <span x-text="formatDate(course.exam_date)"></span>
-                    </p>
-                    <p>
-                      <strong>Days left:</strong>
-                      <span x-text="daysLeft(course.exam_date)"></span>
-                    </p>
-                    <div class="progress-wrapper">
-                      <div
-                        class="progress-bar"
-                        :style="'width:'+courseProgress(course)+'%'"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                        :aria-valuenow="courseProgress(course)"
-                      ></div>
-                    </div>
-                    <p x-text="courseProgress(course).toFixed(0)+'% completed'"></p>
-                    <button
-                      class="btn btn--primary btn--sm"
-                      @click="openChapterModal(course)"
-                    >
-                      + Add Chapter
+        <nav class="sidebar" :class="{ 'sidebar--collapsed': sidebarCollapsed }">
+            <div>
+                <div class="sidebar__header">
+                    <h1 class="logo" @click="navigate('#/dashboard')" x-show="!sidebarCollapsed">StudyHub</h1>
+                    <button @click="sidebarCollapsed = !sidebarCollapsed" class="btn btn--icon">
+                        <svg x-show="!sidebarCollapsed" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                        <svg x-show="sidebarCollapsed" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="15" y1="3" x2="15" y2="21"></line></svg>
                     </button>
-                  </div>
                 </div>
-              </template>
-            </div>
-          </section>
+                
+                <div class="sidebar__nav">
+                    <a @click="navigate('#/dashboard')" class="nav-item" :class="{'active': route === 'dashboard'}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span x-show="!sidebarCollapsed">Dashboard</span>
+                    </a>
+                    <a @click="navigate('#/quick-revision')" class="nav-item" :class="{'active': route === 'quick-revision'}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                        <span x-show="!sidebarCollapsed">Quick Revision</span>
+                    </a>
+                    <a @click="navigate('#/settings')" class="nav-item" :class="{'active': route === 'settings'}">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        <span x-show="!sidebarCollapsed">Settings</span>
+                    </a>
+                </div>
 
-          <!-- Course Detail -->
-          <section x-show="route==='course' && currentCourse">
-            <h1 class="mb-16" x-text="currentCourse?.name"></h1>
-            <!-- Tabs -->
-            <div class="tabs flex gap-8 mb-16">
-              <button
-                class="btn btn--secondary"
-                :class="{ 'btn--primary': courseTab==='topics' }"
-                @click="courseTab='topics'"
-              >
-                Topics
-              </button>
-              <button
-                class="btn btn--secondary"
-                :class="{ 'btn--primary': courseTab==='notes' }"
-                @click="courseTab='notes'"
-              >
-                Notes
-              </button>
-              <button
-                class="btn btn--secondary"
-                :class="{ 'btn--primary': courseTab==='flashcards' }"
-                @click="courseTab='flashcards'"
-              >
-                Flash-Cards
-              </button>
-            </div>
-            <!-- Topics Tab -->
-            <div x-show="courseTab==='topics'">
-              <template x-for="chapter in currentCourse.chapters" :key="chapter.id">
-                <div class="card mb-16">
-                  <div class="card__header flex justify-between items-center">
-                    <h3 x-text="chapter.title"></h3>
-                    <div class="flex gap-4">
-                      <button
-                        class="btn btn--sm btn--outline"
-                        @click="editChapter(currentCourse, chapter)"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        class="btn btn--sm btn--outline"
-                        @click="deleteChapter(currentCourse, chapter)"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                  <div class="card__body">
-                    <template x-for="sub in chapter.subtopics" :key="sub.id">
-                      <div class="flex items-center gap-8 mb-8">
-                        <input
-                          type="checkbox"
-                          :id="sub.id"
-                          :checked="sub.done"
-                          @change="toggleSubtopicDone(currentCourse, chapter, sub, $event)"
-                        />
-                        <label
-                          :for="sub.id"
-                          x-text="sub.title"
-                          :class="{ 'line-through': sub.done }"
-                        ></label>
-                        <button
-                          class="btn btn--sm btn--outline ml-auto"
-                          @click="editSubtopic(chapter, sub)"
-                        >
-                          ✎
-                        </button>
-                      </div>
+                <hr x-show="!sidebarCollapsed">
+                
+                <div x-show="!sidebarCollapsed" class="sidebar__courses">
+                    <h4 class="sidebar__courses-title">My Courses</h4>
+                    <template x-for="course in data.courses" :key="course.id">
+                        <a @click="navigate('#/course/' + course.id)" class="nav-item nav-item--sub" :class="{'active': currentCourse?.id === course.id && route !== 'dashboard'}">
+                            <span class="course-code" x-text="course.code"></span>
+                            <span x-text="course.name"></span>
+                        </a>
                     </template>
-                    <button
-                      class="btn btn--sm btn--primary"
-                      @click="addSubtopic(chapter)"
-                    >
-                      + Add Subtopic
-                    </button>
-                  </div>
                 </div>
-              </template>
             </div>
-            <!-- Notes Tab -->
-            <div x-show="courseTab==='notes'">
-              <div class="flex justify-end mb-16">
-                <button
-                  class="btn btn--primary btn--sm"
-                  @click="openNoteModal(null)"
-                >
-                  + New Note
+            
+            <div class="sidebar__footer">
+                 <button @click="toggleDarkMode()" class="btn btn--secondary btn--full-width">
+                    <span x-show="!darkMode">🌙 Dark Mode</span>
+                    <span x-show="darkMode">☀️ Light Mode</span>
                 </button>
-              </div>
-              <template x-for="n in notesByCourse(currentCourse.id)" :key="n.id">
-                <div class="card mb-16">
-                  <div class="card__header flex justify-between items-center">
-                    <h3 x-text="n.title"></h3>
-                    <div class="flex gap-4">
-                      <button
-                        class="btn btn--sm btn--outline"
-                        @click="openNoteModal(n)"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        class="btn btn--sm btn--outline"
-                        @click="deleteNote(n)"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                  <div class="card__body" x-html="n.html"></div>
-                </div>
-              </template>
             </div>
-            <!-- Flashcards Tab -->
-            <div x-show="courseTab==='flashcards'">
-              <div class="flex justify-between mb-16">
-                <button
-                  class="btn btn--primary btn--sm"
-                  @click="openFlashcardModal(null)"
-                >
-                  + New Card
-                </button>
-                <button
-                  class="btn btn--secondary btn--sm"
-                  @click="shuffleFlashcards()"
-                >
-                  Shuffle
-                </button>
-              </div>
-              <template x-for="f in flashcardsByCourse(currentCourse.id)" :key="f.id">
-                <div
-                  class="flashcard"
-                  @click="flipCard(f)"
-                  :class="{ 'is-flipped': f.flipped }"
-                >
-                  <div class="flashcard__face flashcard__front" x-text="f.front"></div>
-                  <div class="flashcard__face flashcard__back" x-text="f.back"></div>
-                  <button
-                    class="btn btn--sm btn--outline flashcard__edit"
-                    @click.stop="openFlashcardModal(f)"
-                  >
-                    ✎
-                  </button>
-                  <button
-                    class="btn btn--sm btn--outline flashcard__delete"
-                    @click.stop="deleteFlashcard(f)"
-                  >
-                    🗑
-                  </button>
-                </div>
-              </template>
-            </div>
-          </section>
+        </nav>
 
-          <!-- Quick Revision -->
-          <section x-show="route==='quickrevision'">
-            <h1 class="mb-16">Quick Revision</h1>
-            <input
-              type="search"
-              placeholder="Search..."
-              class="form-control mb-16"
-              x-model="qrSearch"
-            />
-            <template x-for="qs in quickSheetsFiltered()" :key="qs.id">
-              <div class="card mb-16">
-                <div class="card__header flex justify-between items-center">
-                  <h3 x-text="qs.title"></h3>
-                  <div class="flex gap-4">
-                    <button
-                      class="btn btn--sm btn--outline"
-                      @click="openQuickSheetModal(qs)"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      class="btn btn--sm btn--outline"
-                      @click="deleteQuickSheet(qs)"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-                <div class="card__body">
-                  <ul class="px-16">
-                    <template x-for="b in qs.bullets" :key="b">
-                      <li x-text="b"></li>
+        <!-- Main Content -->
+        <main class="main" x-morph:dynamic>
+            <!-- Dashboard -->
+            <div x-show="route === 'dashboard'" key="dashboard" class="container fade-in">
+                <h2 class="page-title">Dashboard</h2>
+                <div class="grid-layout">
+                    <template x-for="course in data.courses" :key="course.id">
+                        <div class="card card--interactive" @click="navigate(`#/course/${course.id}`)">
+                            <h3 class="card__title" x-text="course.code"></h3>
+                            <p class="card__subtitle" x-text="course.name"></p>
+                            <div class="course-meta">
+                                <span>Exam: <strong x-text="formatDate(course.exam_date)"></strong></span>
+                                <span>Days left: <strong x-text="daysLeft(course.exam_date)"></strong></span>
+                            </div>
+                            <div class="progress-wrapper">
+                                <div class="progress-bar" :style="`width: ${courseProgress(course)}%`"></div>
+                            </div>
+                        </div>
                     </template>
-                  </ul>
                 </div>
-              </div>
-            </template>
-            <button
-              class="btn btn--primary btn--sm"
-              @click="openQuickSheetModal(null)"
-            >
-              + New Bullet Sheet
-            </button>
-          </section>
-
-          <!-- Settings -->
-          <section x-show="route==='settings'">
-            <h1 class="mb-16">Settings</h1>
-            <div class="card mb-16">
-              <div class="card__body flex flex-col gap-8">
-                <label class="flex items-center gap-8">
-                  <input
-                    type="checkbox"
-                    :checked="settings.encrypted"
-                    @change="toggleEncryption($event)"
-                  />
-                  Enable Encryption
-                </label>
-                <button class="btn btn--secondary btn--sm" @click="exportData()">
-                  Export Backup
-                </button>
-                <div class="form-group">
-                  <label class="form-label" for="importFile">Import Backup</label>
-                  <input
-                    id="importFile"
-                    type="file"
-                    class="form-control"
-                    @change="importData($event)"
-                  />
-                </div>
-              </div>
             </div>
-          </section>
 
-          <!-- Modal overlay -->
-          <div class="modal" x-show="modalOpen" @keydown.escape.window="closeModal()">
-            <div class="modal__backdrop" @click="closeModal()"></div>
-            <div class="modal__dialog card" @click.stop>
-              <!-- Chapter Modal -->
-              <template x-if="modalView==='chapter'">
-                <div class="card__body flex flex-col gap-16">
-                  <h3 x-text="chapterForm.id ? 'Edit Chapter' : 'New Chapter'"></h3>
-                  <input
-                    class="form-control"
-                    x-model="chapterForm.title"
-                    placeholder="Chapter Title"
-                  />
-                  <div class="flex gap-8 justify-end">
-                    <button class="btn btn--secondary" @click="closeModal()">
-                      Cancel
-                    </button>
-                    <button class="btn btn--primary" @click="saveChapter()">
-                      Save
-                    </button>
-                  </div>
+            <!-- Course Page -->
+            <div x-show="route === 'course'" key="course" class="container fade-in">
+                <div class="page-header">
+                    <div>
+                        <h2 class="page-title" x-text="currentCourse?.name"></h2>
+                        <p class="page-subtitle" x-text="currentCourse?.code"></p>
+                    </div>
+                     <button @click="openChapterModal(currentCourse)" class="btn btn--primary">+ Add Chapter</button>
                 </div>
-              </template>
-              <!-- Subtopic Modal -->
-              <template x-if="modalView==='subtopic'">
-                <div class="card__body flex flex-col gap-16">
-                  <h3 x-text="subtopicForm.id ? 'Edit Subtopic' : 'New Subtopic'"></h3>
-                  <input
-                    class="form-control"
-                    x-model="subtopicForm.title"
-                    placeholder="Subtopic Title"
-                  />
-                  <div class="flex gap-8 justify-end">
-                    <button class="btn btn--secondary" @click="closeModal()">
-                      Cancel
-                    </button>
-                    <button class="btn btn--primary" @click="saveSubtopic()">
-                      Save
-                    </button>
-                  </div>
+                <div class="list-container" x-sort="handleChapterSort(currentCourse.chapters, $event.detail.moved.element.getAttribute('x-sort:item'), $event.detail.moved.newIndex)">
+                    <template x-for="chapter in currentCourse?.chapters || []" :key="chapter.id">
+                        <div class="expandable-card" x-data="{ expanded: false }" x-sort:item="chapter.id">
+                            <div class="list-item-card" @click="expanded = !expanded" @dblclick.stop="navigate(`#/course/${currentCourse.id}/chapter/${chapter.id}`)">
+                                <div class="flex items-center gap-md">
+                                    <div x-sort:handle class="drag-handle">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
+                                    </div>
+                                    <span x-text="chapter.title"></span>
+                                </div>
+                                <div class="button-group">
+                                    <button @click.stop="editChapter(currentCourse, chapter)" class="btn btn--secondary btn--sm">Edit</button>
+                                    <button @click.stop="deleteChapter(currentCourse, chapter)" class="btn btn--danger btn--sm">Delete</button>
+                                    <button class="btn btn--icon btn--sm" :class="{ 'rotate-180': expanded }">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="expandable-content" x-show="expanded" x-collapse>
+                                <div class="nested-list" x-sort="handleSubtopicSort(chapter.subtopics, $event.detail.moved.element.getAttribute('x-sort:item'), $event.detail.moved.newIndex)">
+                                    <template x-for="subtopic in chapter.subtopics" :key="subtopic.id">
+                                        <div class="nested-list-item" x-sort:item="subtopic.id" @dblclick.stop="navigate(`#/course/${currentCourse.id}/chapter/${chapter.id}/subtopic/${subtopic.id}`)">
+                                            <div class="flex items-center gap-md">
+                                                <div x-sort:handle class="drag-handle">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
+                                                </div>
+                                                <div class="status-dropdown-wrapper">
+                                                    <select :value="subtopic.status" @change="updateSubtopicStatus(subtopic, $event.target.value)" @click.stop class="status-select" :class="`status--${subtopic.status}`">
+                                                        <option value="unread">Unread</option>
+                                                        <option value="confused">Confused</option>
+                                                        <option value="revised">Revised</option>
+                                                    </select>
+                                                </div>
+                                                <span x-text="subtopic.title"></span>
+                                            </div>
+                                            <div class="button-group">
+                                                <button @click.stop="editSubtopic(chapter, subtopic)" class="btn btn--secondary btn--sm">Edit</button>
+                                                <button @click.stop="deleteSubtopic(chapter, subtopic)" class="btn btn--danger btn--sm">Delete</button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="add-button-footer">
+                                    <button @click="addSubtopic(chapter)" class="btn btn--secondary btn--sm">+ Add Subtopic</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <p x-show="currentCourse?.chapters.length === 0" class="empty-state">No chapters yet. Click '+ Add Chapter' to get started.</p>
                 </div>
-              </template>
-              <!-- Note Modal -->
-              <template x-if="modalView==='note'">
-                <div class="card__body flex flex-col gap-16" x-init="initQuill()">
-                  <input
-                    class="form-control"
-                    x-model="noteForm.title"
-                    placeholder="Note Title"
-                  />
-                  <div id="quillEditor" style="height: 200px"></div>
-                  <div class="flex gap-8 justify-end">
-                    <button class="btn btn--secondary" @click="closeModal()">
-                      Cancel
-                    </button>
-                    <button class="btn btn--primary" @click="saveNote()">
-                      Save
-                    </button>
-                  </div>
-                </div>
-              </template>
-              <!-- Flashcard Modal -->
-              <template x-if="modalView==='flashcard'">
-                <div class="card__body flex flex-col gap-16">
-                  <input
-                    class="form-control"
-                    x-model="flashForm.front"
-                    placeholder="Front Text"
-                  />
-                  <textarea
-                    class="form-control"
-                    x-model="flashForm.back"
-                    placeholder="Back Text"
-                  ></textarea>
-                  <div class="flex gap-8 justify-end">
-                    <button class="btn btn--secondary" @click="closeModal()">
-                      Cancel
-                    </button>
-                    <button class="btn btn--primary" @click="saveFlashcard()">
-                      Save
-                    </button>
-                  </div>
-                </div>
-              </template>
-              <!-- QuickSheet Modal -->
-              <template x-if="modalView==='quicksheet'">
-                <div class="card__body flex flex-col gap-16">
-                  <input
-                    class="form-control"
-                    x-model="qsForm.title"
-                    placeholder="Sheet Title"
-                  />
-                  <textarea
-                    class="form-control"
-                    x-model="qsForm.bulletsText"
-                    placeholder="One bullet per line"
-                  ></textarea>
-                  <div class="flex gap-8 justify-end">
-                    <button class="btn btn--secondary" @click="closeModal()">
-                      Cancel
-                    </button>
-                    <button class="btn btn--primary" @click="saveQuickSheet()">
-                      Save
-                    </button>
-                  </div>
-                </div>
-              </template>
             </div>
-          </div>
+
+            <!-- Chapter Page -->
+            <div x-show="route === 'chapter'" key="chapter" class="container fade-in">
+                <div class="breadcrumbs">
+                    <a @click="navigate('#/course/' + currentCourse.id)" x-text="currentCourse?.name"></a>
+                    <span>/</span>
+                </div>
+                <div class="page-header">
+                    <h2 class="page-title" x-text="currentChapter?.title"></h2>
+                    <button @click="addSubtopic(currentChapter)" class="btn btn--primary">+ Add Subtopic</button>
+                </div>
+                 <div class="list-container" x-sort="handleSubtopicSort(currentChapter.subtopics, $event.detail.moved.element.getAttribute('x-sort:item'), $event.detail.moved.newIndex)">
+                    <template x-for="subtopic in currentChapter?.subtopics || []" :key="subtopic.id">
+                        <div class="list-item-card" x-sort:item="subtopic.id" @dblclick="navigate(`#/course/${currentCourse.id}/chapter/${currentChapter.id}/subtopic/${subtopic.id}`)">
+                             <div class="flex items-center gap-md">
+                                <div x-sort:handle class="drag-handle">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
+                                </div>
+                                <div class="status-dropdown-wrapper">
+                                    <select :value="subtopic.status" @change="updateSubtopicStatus(subtopic, $event.target.value)" @click.stop class="status-select" :class="`status--${subtopic.status}`">
+                                        <option value="unread">Unread</option>
+                                        <option value="confused">Confused</option>
+                                        <option value="revised">Revised</option>
+                                    </select>
+                                </div>
+                                <span x-text="subtopic.title"></span>
+                            </div>
+                            <div class="button-group">
+                                <button @click.stop="editSubtopic(currentChapter, subtopic)" class="btn btn--secondary btn--sm">Edit</button>
+                                <button @click.stop="deleteSubtopic(currentChapter, subtopic)" class="btn btn--danger btn--sm">Delete</button>
+                            </div>
+                        </div>
+                    </template>
+                    <p x-show="currentChapter?.subtopics.length === 0" class="empty-state">No subtopics yet. Click '+ Add Subtopic' to get started.</p>
+                </div>
+            </div>
+            
+            <!-- Subtopic Page -->
+            <div x-show="route === 'subtopic'" key="subtopic" class="container fade-in">
+                <div class="breadcrumbs">
+                    <a @click="navigate('#/course/' + currentCourse.id)" x-text="currentCourse?.name"></a>
+                    <span>/</span>
+                    <a @click="navigate('#/course/' + currentCourse.id + '/chapter/' + currentChapter.id)" x-text="currentChapter?.title"></a>
+                     <span>/</span>
+                </div>
+                 <div class="page-header">
+                    <h2 class="page-title" x-text="currentSubtopic?.title"></h2>
+                </div>
+
+                <div class="subtopic-content-layout">
+                    <!-- Notes -->
+                    <div class="card">
+                        <div class="card__header">
+                            <h4>Notes</h4>
+                            <button @click="openNoteModal(null, currentSubtopic)" class="btn btn--secondary btn--sm">+ New Note</button>
+                        </div>
+                        <div class="card__body">
+                            <div class="note-list">
+                                <template x-for="note in notesBySubtopic(currentSubtopic?.id)" :key="note.id">
+                                    <div class="list-item">
+                                        <span x-text="note.title"></span>
+                                        <div class="button-group">
+                                            <button @click="openNoteModal(note, currentSubtopic)" class="btn btn--outline btn--sm">View/Edit</button>
+                                            <button @click="deleteNote(note)" class="btn btn--danger-outline btn--sm">Delete</button>
+                                        </div>
+                                    </div>
+                                </template>
+                                <p x-show="!currentSubtopic || notesBySubtopic(currentSubtopic.id).length === 0" class="empty-state">No notes for this subtopic yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Flashcards -->
+                    <div class="card">
+                        <div class="card__header">
+                            <h4>Flash Cards</h4>
+                            <button @click="openFlashcardModal(null, currentSubtopic)" class="btn btn--secondary btn--sm">+ New Card</button>
+                        </div>
+                        <div class="card__body">
+                            <div class="flashcard-grid">
+                                <template x-for="card in flashcardsBySubtopic(currentSubtopic?.id)" :key="card.id">
+                                    <div class="flashcard" :class="{ 'is-flipped': card.flipped }">
+                                        <div class="flashcard__face flashcard__front" @click="flipCard(card)">
+                                            <p x-text="card.front"></p>
+                                        </div>
+                                        <div class="flashcard__face flashcard__back" @click="flipCard(card)">
+                                            <p x-text="card.back"></p>
+                                        </div>
+                                        <div class="flashcard__actions">
+                                                <button @click.stop="openFlashcardModal(card, currentSubtopic)" class="btn btn--icon btn--sm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
+                                                <button @click.stop="deleteFlashcard(card)" class="btn btn--icon btn--sm btn--danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                                        </div>
+                                    </div>
+                                </template>
+                                <p x-show="!currentSubtopic || flashcardsBySubtopic(currentSubtopic.id).length === 0" class="empty-state">No flashcards for this subtopic yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Revision -->
+            <div x-show="route === 'quick-revision'" key="quick-revision" class="container fade-in">
+                 <div class="page-header">
+                    <h2 class="page-title">Quick Revision Sheets</h2>
+                    <button @click="openQuickSheetModal()" class="btn btn--primary">+ New Sheet</button>
+                </div>
+                <div class="mb-lg">
+                    <input type="text" x-model="qrSearch" placeholder="Search sheets by title..." class="form-control">
+                </div>
+                <div class="grid-layout">
+                    <template x-for="sheet in quickSheetsFiltered()" :key="sheet.id">
+                        <div class="card">
+                           <div class="card__header">
+                                <h3 x-text="sheet.title"></h3>
+                                <div class="button-group">
+                                    <button @click="openQuickSheetModal(sheet)" class="btn btn--secondary btn--sm">Edit</button>
+                                    <button @click="deleteQuickSheet(sheet)" class="btn btn--danger btn--sm">Delete</button>
+                                </div>
+                            </div>
+                            <div class="card__body">
+                                <ul class="bullet-list">
+                                    <template x-for="bullet in sheet.bullets" :key="bullet">
+                                        <li x-text="bullet"></li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                    </template>
+                     <p x-show="quickSheetsFiltered().length === 0" class="empty-state">No quick revision sheets found.</p>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div x-show="route === 'settings'" key="settings" class="container fade-in">
+                <h2 class="page-title">Settings</h2>
+                <div class="card" style="max-width: 600px;">
+                    <div class="card__body">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" :checked="settings.encrypted" @change="toggleEncryption"> Enable Encryption for Backups
+                            </label>
+                            <p class="form-hint">If enabled, you will be prompted for a password when exporting data.</p>
+                        </div>
+                        <hr>
+                        <div class="form-group">
+                           <label class="form-label">Export Data</label>
+                           <p class="form-hint">Save a JSON backup file of all your courses, notes, and flashcards.</p>
+                           <button @click="exportData()" class="btn btn--primary">Export Backup</button>
+                        </div>
+                         <hr>
+                        <div class="form-group">
+                            <label for="import-file" class="form-label">Import Data</label>
+                            <p class="form-hint">Import a previously exported backup file. This will overwrite current data.</p>
+                            <input type="file" id="import-file" @change="importData" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
-      </div>
     </div>
 
-    <!-- CryptoJS AES -->
-    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js"></script>
-    <!-- Day.js -->
-    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-    <!-- Quill JS -->
-    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-    <!-- App Script -->
+    <!-- Modal -->
+    <div x-show="modalOpen" class="modal" @click.self="closeModal()" @keydown.escape.window="closeModal()">
+        <div class="modal__dialog" x-show="modalOpen">
+             <div class="modal-content">
+                <!-- Chapter Modal -->
+                <div x-if="modalView === 'chapter'">
+                    <div>
+                        <h3 class="modal-title">Chapter</h3>
+                        <div class="form-group">
+                            <label class="form-label">Title</label>
+                            <input type="text" x-model="chapterForm.title" class="form-control" placeholder="e.g., Introduction to Fluid Mechanics">
+                        </div>
+                        <div class="modal-actions">
+                            <button @click="closeModal()" class="btn btn--secondary">Cancel</button>
+                            <button @click="saveChapter()" class="btn btn--primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subtopic Modal -->
+                <div x-if="modalView === 'subtopic'">
+                    <div>
+                        <h3 class="modal-title">Subtopic</h3>
+                        <div class="form-group">
+                            <label class="form-label">Title</label>
+                            <input type="text" x-model="subtopicForm.title" class="form-control" placeholder="e.g., Viscosity and Surface Tension">
+                        </div>
+                        <div class="modal-actions">
+                            <button @click="closeModal()" class="btn btn--secondary">Cancel</button>
+                            <button @click="saveSubtopic()" class="btn btn--primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note Modal -->
+                 <div x-if="modalView === 'note'">
+                    <div @click.stop>
+                        <h3 class="modal-title">Note</h3>
+                        <div class="form-group">
+                            <label class="form-label">Title</label>
+                            <input type="text" x-model="noteForm.title" class="form-control" placeholder="My key takeaways">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Content</label>
+                            <div id="quillEditor" style="height: 250px;"></div>
+                        </div>
+                        <div class="modal-actions">
+                            <button @click="closeModal()" class="btn btn--secondary">Cancel</button>
+                            <button @click="saveNote()" class="btn btn--primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flashcard Modal -->
+                <div x-if="modalView === 'flashcard'">
+                    <div>
+                        <h3 class="modal-title">Flash Card</h3>
+                        <div class="form-group">
+                            <label class="form-label">Front (Question)</label>
+                            <textarea x-model="flashForm.front" class="form-control" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Back (Answer)</label>
+                            <textarea x-model="flashForm.back" class="form-control" rows="4"></textarea>
+                        </div>
+                        <div class="modal-actions">
+                            <button @click="closeModal()" class="btn btn--secondary">Cancel</button>
+                            <button @click="saveFlashcard()" class="btn btn--primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Sheet Modal -->
+                <div x-if="modalView === 'quicksheet'">
+                    <div>
+                        <h3 class="modal-title">Quick Sheet</h3>
+                        <div class="form-group">
+                            <label class="form-label">Title</label>
+                            <input type="text" x-model="qsForm.title" class="form-control" placeholder="e.g., Key Formulas for Exam 1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Course (Optional)</label>
+                            <select x-model="qsForm.courseId" class="form-control">
+                                <option value="">Select Course</option>
+                                <template x-for="course in data.courses" :key="course.id">
+                                    <option :value="course.id" x-text="course.name"></option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bullets (one per line)</label>
+                            <textarea x-model="qsForm.bulletsText" class="form-control" rows="10"></textarea>
+                        </div>
+                        <div class="modal-actions">
+                            <button @click="closeModal()" class="btn btn--secondary">Cancel</button>
+                            <button @click="saveQuickSheet()" class="btn btn--primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="app.js"></script>
-    <!-- Alpine.js (must be last) -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  </body>
+</body>
 </html>
