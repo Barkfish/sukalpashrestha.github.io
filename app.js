@@ -1,812 +1,346 @@
-const { useState, useEffect, useReducer, createContext, useContext } = React;
+/* app.js – StudyHub SPA (Alpine.js 3)
+   This version runs entirely in-memory (no localStorage per sandbox rules).
+   Data export/import lets users persist manually.
+*/
 
-// Initial course data
-const initialCourses = [
-  {
-    code: "MEEG303",
-    title: "Fluid Mechanics & Hydraulic Machine",
-    examDate: "2025-07-16",
-    topics: ["Fluid Properties and Definitions", "Fluid Statics", "Kinematics of Fluid Flow", "Basic Equations of Fluid Flow", "Viscous Flow", "Dimensional Analysis and Similitude", "Introduction to Compressible Flow"],
-    customTopics: [],
-    notes: [],
-    flashcards: [],
-    quickRevisions: [],
-    completedTopics: []
-  },
-  {
-    code: "MEEG325",
-    title: "Finite Element Method",
-    examDate: "2025-07-20",
-    topics: ["Introduction and History of FEM", "1D Second Order Equations and Discretization", "1D FEM Applications (Spring, Bar, Truss, Beam, Heat Transfer)", "Method of Weighted Residuals and Ritz Method", "2D FEM: Plane Stress/Strain, Triangular and Rectangular Elements", "Isoparametric Elements and Formulation", "Practical Works (Bar, Truss, Bicycle Frame, Cylinder Stress, Thermal Stress, Fin, Dynamics, Pipe Flow)"],
-    customTopics: [],
-    notes: [],
-    flashcards: [],
-    quickRevisions: [],
-    completedTopics: []
-  },
-  {
-    code: "COEG304",
-    title: "Instrumentation & Control",
-    examDate: "2025-07-24",
-    topics: ["Control System Introduction", "Mathematical Modeling", "Laplace Transform and Transfer Functions", "Time Response Analysis", "Feedback Characteristics", "Stability Analysis (Time Domain)", "Frequency Response Analysis", "Design of Linear Control Systems", "State Space Analysis"],
-    customTopics: [],
-    notes: [],
-    flashcards: [],
-    quickRevisions: [],
-    completedTopics: []
-  },
-  {
-    code: "MGTS301",
-    title: "Engineering Economics",
-    examDate: "2025-07-28",
-    topics: ["Fundamentals of Engineering Economy", "Cost Concepts and Design Economics", "Time Value of Money", "Economic Profitability Evaluation Methods", "Depreciation", "Replacement Analysis", "Benefit-Cost Ratio Method", "Project Risk and Uncertainty"],
-    customTopics: [],
-    notes: [],
-    flashcards: [],
-    quickRevisions: [],
-    completedTopics: []
-  },
-  {
-    code: "MEEG315",
-    title: "Machine Element Design & Processes",
-    examDate: "2025-08-01",
-    topics: ["Introduction to Design Process", "Conceptualization and Feasibility Studies", "Problem Solving and Decision Making", "Working Stresses and Fatigue", "Riveted, Screw Threaded and Welded Connections", "Mechanical Springs Design", "Rolling Contact Bearings", "Lubrication and Journal Bearings"],
-    customTopics: [],
-    notes: [],
-    flashcards: [],
-    quickRevisions: [],
-    completedTopics: []
+/************** Helpers **************/
+// UUID v4 generator that works even if window.crypto is unavailable (e.g., non-secure context)
+function uuid() {
+  let rnd;
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    rnd = crypto.getRandomValues(new Uint8Array(16));
+  } else {
+    rnd = new Uint8Array(16);
+    for (let i = 0; i < 16; i++) rnd[i] = Math.floor(Math.random() * 256);
   }
-];
+  rnd[6] = (rnd[6] & 0x0f) | 0x40; // version 4
+  rnd[8] = (rnd[8] & 0x3f) | 0x80; // variant
+  const hex = [...rnd].map(b => b.toString(16).padStart(2, '0')).join('');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
 
-// Context and reducer for state management
-const StudyContext = createContext();
+/************** Default Course Data **************/
+// (Generated from payload – same content as before but without IDs)
+const defaultData = { /* JSON omitted for brevity in source comments; real code uses full string replaced below */ };
 
-const studyReducer = (state, action) => {
-  switch (action.type) {
-    case 'SET_ACTIVE_COURSE':
-      return { ...state, activeCourse: action.payload };
-    case 'SET_ACTIVE_TAB':
-      return { ...state, activeTab: action.payload };
-    case 'ADD_TOPIC':
-      return {
-        ...state,
-        courses: state.courses.map(course =>
-          course.code === action.courseCode
-            ? { ...course, customTopics: [...course.customTopics, action.payload] }
-            : course
-        )
-      };
-    case 'TOGGLE_TOPIC':
-      return {
-        ...state,
-        courses: state.courses.map(course =>
-          course.code === action.courseCode
-            ? {
-                ...course,
-                completedTopics: course.completedTopics.includes(action.payload)
-                  ? course.completedTopics.filter(t => t !== action.payload)
-                  : [...course.completedTopics, action.payload]
-              }
-            : course
-        )
-      };
-    case 'ADD_NOTE':
-      return {
-        ...state,
-        courses: state.courses.map(course =>
-          course.code === action.courseCode
-            ? { ...course, notes: [...course.notes, action.payload] }
-            : course
-        )
-      };
-    case 'UPDATE_NOTE':
-      return {
-        ...state,
-        courses: state.courses.map(course =>
-          course.code === action.courseCode
-            ? {
-                ...course,
-                notes: course.notes.map(note =>
-                  note.id === action.payload.id ? action.payload : note
-                )
-              }
-            : course
-        )
-      };
-    case 'DELETE_NOTE':
-      return {
-        ...state,
-        courses: state.courses.map(course =>
-          course.code === action.courseCode
-            ? { ...course, notes: course.notes.filter(note => note.id !== action.payload) }
-            : course
-        )
-      };
-    case 'ADD_FLASHCARD':
-      return {
-        ...state,
-        courses: state.courses.map(course =>
-          course.code === action.courseCode
-            ? { ...course, flashcards: [...course.flashcards, action.payload] }
-            : course
-        )
-      };
-    case 'DELETE_FLASHCARD':
-      return {
-        ...state,
-        courses: state.courses.map(course =>
-          course.code === action.courseCode
-            ? { ...course, flashcards: course.flashcards.filter(card => card.id !== action.payload) }
-            : course
-        )
-      };
-    case 'ADD_QUICK_REVISION':
-      return {
-        ...state,
-        courses: state.courses.map(course =>
-          course.code === action.courseCode
-            ? { ...course, quickRevisions: [...course.quickRevisions, action.payload] }
-            : course
-        )
-      };
-    case 'DELETE_QUICK_REVISION':
-      return {
-        ...state,
-        courses: state.courses.map(course =>
-          course.code === action.courseCode
-            ? { ...course, quickRevisions: course.quickRevisions.filter(rev => rev.id !== action.payload) }
-            : course
-        )
-      };
-    case 'ADD_COURSE':
-      return {
-        ...state,
-        courses: [...state.courses, action.payload]
-      };
-    default:
-      return state;
-  }
-};
+// We will inject JSON string using template literal to keep file concise.
+const defaultDataRaw = `{"courses":${JSON.stringify(defaultData?.courses || [])}}`; // This is placeholder; we will programmatically build.
 
-// Helper function to calculate days remaining
-const getDaysRemaining = (examDate) => {
-  const today = new Date();
-  const exam = new Date(examDate);
-  const timeDiff = exam.getTime() - today.getTime();
-  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-  return daysDiff;
-};
+// For simplicity, directly reuse previously detailed defaultData content.
+// (Due to character limit, we import via script tag in HTML. Here we reconstruct.)
 
-// Generate unique ID
-const generateId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
+/************** Data Preparation **************/
+function prepareData() {
+  // Parse full JSON string inserted at build-time (avoid heavy typing)
+  const raw = JSON.parse(`{"courses":[{"code":"MEEG 303","name":"Fluid Mechanics & Hydraulic Machine","exam_date":"2025-07-16","chapters":[{"title":"Fluid properties","subtopics":["Definition of fluid","Fluid viscosity","Newtonian and non-Newtonian fluids","Density","Surface tension","Compressibility","Vapour pressure","Cohesion and adhesion"]},{"title":"Fluid Statics","subtopics":["Pressure at a point","Basic equation of fluid statics","Pressure variation in static fluid","Hydrostatic force on submerged surfaces","Buoyancy and stability","Fluids in rigid body motion"]},{"title":"Kinematics Of Fluid Flow","subtopics":["Timelines","Streamlines","Streak lines","Path lines","Stream function","Velocity potential","Acceleration of fluid particle","Irrotational flow","Fluid rotation","Circulation and vorticity"]},{"title":"Basic Equations of Fluid Flow","subtopics":["Conservation of mass","Newton's Second Law","Principle of angular momentum","First law of thermodynamics","Reynolds Transport theorem","Euler's Equation","Bernoulli's Equation","Flow measurement devices"]},{"title":"Viscous Flow","subtopics":["Boundary layer concept","Laminar and turbulent boundary layer flow","Flow over flat plates","Energy consideration in pipe flow","Calculation of head loss","Flow about immersed bodies"]},{"title":"Dimensional Analysis and Similitude","subtopics":["Buckingham Pi theorem","Dimensionless groups","Flow similarity","Model studies"]},{"title":"Introduction to Compressible flow","subtopics":["Propagation of sound waves","Stagnation properties","Isentropic flow equations","Effect of area variation","Isentropic flow in converging and diverging nozzles"]}]},{"code":"MEEG 325","name":"Finite Element Method","exam_date":"2025-07-20","chapters":[{"title":"Introduction","subtopics":["History of FEM","Basics of finite element analysis","Applications in heat transfer, fluid mechanics, solid mechanics"]},{"title":"Finite Element Analysis of One Dimensional Problem","subtopics":["Discretization of domain","Generalized coordinates approach","Derivation of element equations","Assembly of element equations","Boundary conditions","Cholesky method","FEM analysis using spring, bar, truss, beam elements"]},{"title":"Finite Element Analysis of Two Dimensional Problems","subtopics":["Governing equations of plane strain and stress","Finite element formulation","Interpolation functions","Triangular and rectangular elements","Convergence criteria"]},{"title":"Isoparametric Elements and Formulation","subtopics":["Natural coordinates","Area coordinates for triangular elements","Isoparametric elements in 1D, 2D, 3D","Lagrangian and serendipity elements"]}]},{"code":"COEG 304","name":"Instrumentation & Control","exam_date":"2025-07-24","chapters":[{"title":"System Introduction","subtopics":["Definition of control systems","History and examples"]},{"title":"Mathematical Modeling","subtopics":["Physical balances","Differential equations"]},{"title":"Laplace Transform","subtopics":["Definitions","Transfer functions","Mathematical block diagrams"]},{"title":"Time Response Analysis","subtopics":["Standard test signals","1st order systems","2nd order systems","Steady state response"]},{"title":"Feedback Characteristics","subtopics":["Parameter variations","System dynamics","Disturbance effects"]},{"title":"Stability Analysis","subtopics":["Impulse response","Routh's criterion","Root locus"]},{"title":"Frequency Response Analysis","subtopics":["Bode diagrams","Graphical representations"]},{"title":"Stability in Frequency Domain","subtopics":["Nyquist stability criterion","Bode-Nyquist stability criterion","Closed-loop frequency response","Nichols chart","Stability margins"]},{"title":"Design of Linear Control Systems","subtopics":["Specifications","PID controllers","Serial compensation","Internal feedback","Feed forward control"]},{"title":"State Space Analysis","subtopics":["Multivariable systems","Matrix representation","Transfer matrix","Multivariable feedback"]}]},{"code":"MGTS 301","name":"Engineering Economics","exam_date":"2025-07-28","chapters":[{"title":"Fundamentals of Engineering Economy","subtopics":["Microeconomics and Macroeconomics","GDP","Managerial Economics","Law of Supply and Demand","Market Equilibrium"]},{"title":"Cost Concepts and Design Economics","subtopics":["Cost classifications","Economic environment","Break-even point","Cost estimation techniques","Value engineering"]},{"title":"Time Value of Money","subtopics":["Simple and compound interest","Cash flow diagrams","Present, future, and annual equivalents","Interest rates","Continuous compounding"]},{"title":"Methods for Evaluating Economic Profitability","subtopics":["Minimum Attractive Rate of Return (MARR)","Present Worth Method","Future Worth Method","Annual Worth Method","Internal and External Rate of Return","Payback Period"]},{"title":"Depreciation","subtopics":["Classical depreciation methods","Straight-line","Declining-balance","Sinking fund","Sum-of-years-digit"]},{"title":"Replacement Analysis","subtopics":["Reasons for replacement","Economic life determination"]},{"title":"Benefit-Cost Ratio Method","subtopics":["Public projects evaluation","Comparison of mutually exclusive projects"]},{"title":"Project Risk and Uncertainty","subtopics":["Sources of risk","Breakeven and sensitivity analysis","Scenario analysis"]}]},{"code":"MEEG 315","name":"Machine Element Design & Processes","exam_date":"2025-08-01","chapters":[{"title":"Design Process","subtopics":["Recognition of need","Problem definition","Functional requirements","Material selection","Manufacturing methods"]},{"title":"Conceptualization & Problem Solving","subtopics":["Evaluation of alternatives","Feasibility studies","Creative problem solving","Decision making process"]},{"title":"Working Stresses & Failure Prevention","subtopics":["Stress concentration","Stress concentration factor","Fatigue failure","Endurance limit","Factors of safety"]},{"title":"Joints & Connections","subtopics":["Riveted joints","Welded joints","Threaded fasteners","Power screws"]},{"title":"Mechanical Springs","subtopics":["Helical spring stresses","Spring deflection","Extension vs compression springs","Spring materials","Fatigue in springs","Critical frequency"]},{"title":"Rolling Contact Bearings","subtopics":["Bearing types","Bearing life","Load calculations","Bearing selection","Lubrication","Mounting and enclosure"]},{"title":"Lubrication & Journal Bearings","subtopics":["Types of lubrication","Viscosity","Petroff's law","Hydrodynamic lubrication","Bearing design","Heat balance"]}]}]}`);
 
-// Header component
-const Header = ({ onAddCourse }) => {
-  return (
-    <header className="header">
-      <h1 className="header__title">Study Master</h1>
-      <button className="btn btn--primary" onClick={onAddCourse}>
-        + Add Course
-      </button>
-    </header>
-  );
-};
-
-// Sidebar component
-const Sidebar = ({ courses, activeCourse, onCourseSelect }) => {
-  const getProgress = (course) => {
-    const totalTopics = course.topics.length + course.customTopics.length;
-    if (totalTopics === 0) return 0;
-    return (course.completedTopics.length / totalTopics) * 100;
-  };
-
-  return (
-    <aside className="sidebar">
-      {courses.map(course => (
-        <div
-          key={course.code}
-          className={`sidebar__course ${activeCourse === course.code ? 'active' : ''}`}
-          onClick={() => onCourseSelect(course.code)}
-        >
-          <div className="course__title">{course.code}</div>
-          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
-            {course.title}
-          </div>
-          <div className="days-badge">
-            {getDaysRemaining(course.examDate)} days left
-          </div>
-          <div className="progress-bar-wrapper">
-            <div className="progress-bar" style={{ width: `${getProgress(course)}%` }}></div>
-          </div>
-        </div>
-      ))}
-    </aside>
-  );
-};
-
-// Modal component
-const Modal = ({ isOpen, onClose, children }) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
-        {children}
-      </div>
-    </div>
-  );
-};
-
-// Topics tab component
-const TopicsTab = ({ course, dispatch }) => {
-  const [newTopic, setNewTopic] = useState('');
-
-  const allTopics = [...course.topics, ...course.customTopics];
-
-  const handleAddTopic = () => {
-    if (newTopic.trim()) {
-      dispatch({ type: 'ADD_TOPIC', courseCode: course.code, payload: newTopic.trim() });
-      setNewTopic('');
-    }
-  };
-
-  const handleTopicToggle = (topic) => {
-    dispatch({ type: 'TOGGLE_TOPIC', courseCode: course.code, payload: topic });
-  };
-
-  return (
-    <div>
-      <div className="form-group">
-        <div className="flex gap-8">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Add new topic..."
-            value={newTopic}
-            onChange={(e) => setNewTopic(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleAddTopic()}
-          />
-          <button className="btn btn--primary" onClick={handleAddTopic}>
-            Add Topic
-          </button>
-        </div>
-      </div>
-      
-      <div className="topics-grid">
-        {allTopics.map((topic, index) => (
-          <div key={index} className="topic-item">
-            <input
-              type="checkbox"
-              checked={course.completedTopics.includes(topic)}
-              onChange={() => handleTopicToggle(topic)}
-            />
-            <span style={{ textDecoration: course.completedTopics.includes(topic) ? 'line-through' : 'none' }}>
-              {topic}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-// Notes tab component
-const NotesTab = ({ course, dispatch }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingNote, setEditingNote] = useState(null);
-  const [noteTitle, setNoteTitle] = useState('');
-  const [noteContent, setNoteContent] = useState('');
-
-  const handleAddNote = () => {
-    setEditingNote(null);
-    setNoteTitle('');
-    setNoteContent('');
-    setModalOpen(true);
-  };
-
-  const handleEditNote = (note) => {
-    setEditingNote(note);
-    setNoteTitle(note.title);
-    setNoteContent(note.content);
-    setModalOpen(true);
-  };
-
-  const handleSaveNote = () => {
-    if (noteTitle.trim() && noteContent.trim()) {
-      const noteData = {
-        id: editingNote ? editingNote.id : generateId(),
-        title: noteTitle.trim(),
-        content: noteContent.trim(),
-        timestamp: new Date().toISOString()
-      };
-
-      if (editingNote) {
-        dispatch({ type: 'UPDATE_NOTE', courseCode: course.code, payload: noteData });
-      } else {
-        dispatch({ type: 'ADD_NOTE', courseCode: course.code, payload: noteData });
-      }
-
-      setModalOpen(false);
-      setNoteTitle('');
-      setNoteContent('');
-      setEditingNote(null);
-    }
-  };
-
-  const handleDeleteNote = (noteId) => {
-    dispatch({ type: 'DELETE_NOTE', courseCode: course.code, payload: noteId });
-  };
-
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-16">
-        <h3>Notes ({course.notes.length})</h3>
-        <button className="btn btn--primary" onClick={handleAddNote}>
-          + Add Note
-        </button>
-      </div>
-
-      <div className="flex flex-col gap-8">
-        {course.notes.map(note => (
-          <div key={note.id} className="note-item">
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <h4 style={{ margin: 0 }}>{note.title}</h4>
-                <p style={{ margin: '4px 0', fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)' }}>
-                  {new Date(note.timestamp).toLocaleDateString()}
-                </p>
-                <p style={{ margin: '8px 0 0 0' }}>{note.content.substring(0, 120)}...</p>
-              </div>
-              <div className="flex gap-4">
-                <button className="btn btn--sm btn--outline" onClick={() => handleEditNote(note)}>
-                  Edit
-                </button>
-                <button className="btn btn--sm btn--outline" onClick={() => handleDeleteNote(note.id)}>
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <h3>{editingNote ? 'Edit Note' : 'Add Note'}</h3>
-        <div className="form-group">
-          <label className="form-label">Title</label>
-          <input
-            type="text"
-            className="form-control"
-            value={noteTitle}
-            onChange={(e) => setNoteTitle(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label className="form-label">Content</label>
-          <textarea
-            className="form-control"
-            rows="6"
-            value={noteContent}
-            onChange={(e) => setNoteContent(e.target.value)}
-          ></textarea>
-        </div>
-        <div className="flex gap-8 justify-end">
-          <button className="btn btn--outline" onClick={() => setModalOpen(false)}>
-            Cancel
-          </button>
-          <button className="btn btn--primary" onClick={handleSaveNote}>
-            Save
-          </button>
-        </div>
-      </Modal>
-    </div>
-  );
-};
-
-// Flashcards tab component
-const FlashcardsTab = ({ course, dispatch }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
-  const [studyMode, setStudyMode] = useState(false);
-  const [flippedCards, setFlippedCards] = useState(new Set());
-
-  const handleAddFlashcard = () => {
-    setQuestion('');
-    setAnswer('');
-    setModalOpen(true);
-  };
-
-  const handleSaveFlashcard = () => {
-    if (question.trim() && answer.trim()) {
-      const flashcard = {
-        id: generateId(),
-        question: question.trim(),
-        answer: answer.trim()
-      };
-
-      dispatch({ type: 'ADD_FLASHCARD', courseCode: course.code, payload: flashcard });
-      setModalOpen(false);
-      setQuestion('');
-      setAnswer('');
-    }
-  };
-
-  const handleDeleteFlashcard = (cardId) => {
-    dispatch({ type: 'DELETE_FLASHCARD', courseCode: course.code, payload: cardId });
-  };
-
-  const handleFlipCard = (cardId) => {
-    const newFlipped = new Set(flippedCards);
-    if (newFlipped.has(cardId)) {
-      newFlipped.delete(cardId);
-    } else {
-      newFlipped.add(cardId);
-    }
-    setFlippedCards(newFlipped);
-  };
-
-  const shuffleCards = () => {
-    // Reset flipped cards when entering study mode
-    setFlippedCards(new Set());
-  };
-
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-16">
-        <h3>Flashcards ({course.flashcards.length})</h3>
-        <div className="flex gap-8">
-          <button 
-            className={`btn ${studyMode ? 'btn--outline' : 'btn--secondary'}`}
-            onClick={() => { setStudyMode(!studyMode); shuffleCards(); }}
-          >
-            {studyMode ? 'Exit Study Mode' : 'Study Mode'}
-          </button>
-          <button className="btn btn--primary" onClick={handleAddFlashcard}>
-            + Add Flashcard
-          </button>
-        </div>
-      </div>
-
-      <div className="flashcards-container">
-        {course.flashcards.map(card => (
-          <div key={card.id} className="flashcard">
-            <div 
-              className={`card-inner ${flippedCards.has(card.id) ? 'flipped' : ''}`}
-              onClick={() => handleFlipCard(card.id)}
-            >
-              <div className="card-face">
-                <div style={{ textAlign: 'center' }}>
-                  <strong>Q:</strong> {card.question}
-                </div>
-              </div>
-              <div className="card-face back">
-                <div style={{ textAlign: 'center' }}>
-                  <strong>A:</strong> {card.answer}
-                </div>
-              </div>
-            </div>
-            {!studyMode && (
-              <div className="flex justify-center mt-8">
-                <button 
-                  className="btn btn--sm btn--outline"
-                  onClick={(e) => { e.stopPropagation(); handleDeleteFlashcard(card.id); }}
-                >
-                  Delete
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <h3>Add Flashcard</h3>
-        <div className="form-group">
-          <label className="form-label">Question</label>
-          <textarea
-            className="form-control"
-            rows="3"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-          ></textarea>
-        </div>
-        <div className="form-group">
-          <label className="form-label">Answer</label>
-          <textarea
-            className="form-control"
-            rows="3"
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-          ></textarea>
-        </div>
-        <div className="flex gap-8 justify-end">
-          <button className="btn btn--outline" onClick={() => setModalOpen(false)}>
-            Cancel
-          </button>
-          <button className="btn btn--primary" onClick={handleSaveFlashcard}>
-            Save
-          </button>
-        </div>
-      </Modal>
-    </div>
-  );
-};
-
-// Quick Revision tab component
-const QuickRevisionTab = ({ course, dispatch }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [expandedRevisions, setExpandedRevisions] = useState(new Set());
-
-  const handleAddRevision = () => {
-    setTitle('');
-    setContent('');
-    setModalOpen(true);
-  };
-
-  const handleSaveRevision = () => {
-    if (title.trim() && content.trim()) {
-      const revision = {
-        id: generateId(),
-        title: title.trim(),
-        bullets: content.trim().split('\n').filter(line => line.trim())
-      };
-
-      dispatch({ type: 'ADD_QUICK_REVISION', courseCode: course.code, payload: revision });
-      setModalOpen(false);
-      setTitle('');
-      setContent('');
-    }
-  };
-
-  const handleDeleteRevision = (revisionId) => {
-    dispatch({ type: 'DELETE_QUICK_REVISION', courseCode: course.code, payload: revisionId });
-  };
-
-  const toggleRevision = (revisionId) => {
-    const newExpanded = new Set(expandedRevisions);
-    if (newExpanded.has(revisionId)) {
-      newExpanded.delete(revisionId);
-    } else {
-      newExpanded.add(revisionId);
-    }
-    setExpandedRevisions(newExpanded);
-  };
-
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-16">
-        <h3>Quick Revisions ({course.quickRevisions.length})</h3>
-        <button className="btn btn--primary" onClick={handleAddRevision}>
-          + Add Revision
-        </button>
-      </div>
-
-      <div>
-        {course.quickRevisions.map(revision => (
-          <div key={revision.id} className="revision-item">
-            <div className="flex justify-between items-start">
-              <div 
-                className="revision-title flex-1"
-                onClick={() => toggleRevision(revision.id)}
-              >
-                {revision.title}
-              </div>
-              <button 
-                className="btn btn--sm btn--outline"
-                onClick={() => handleDeleteRevision(revision.id)}
-              >
-                Delete
-              </button>
-            </div>
-            {expandedRevisions.has(revision.id) && (
-              <div className="revision-bullets">
-                <ul>
-                  {revision.bullets.map((bullet, index) => (
-                    <li key={index}>{bullet}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <h3>Add Quick Revision</h3>
-        <div className="form-group">
-          <label className="form-label">Title</label>
-          <input
-            type="text"
-            className="form-control"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label className="form-label">Content (one bullet point per line)</label>
-          <textarea
-            className="form-control"
-            rows="6"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Enter each bullet point on a new line..."
-          ></textarea>
-        </div>
-        <div className="flex gap-8 justify-end">
-          <button className="btn btn--outline" onClick={() => setModalOpen(false)}>
-            Cancel
-          </button>
-          <button className="btn btn--primary" onClick={handleSaveRevision}>
-            Save
-          </button>
-        </div>
-      </Modal>
-    </div>
-  );
-};
-
-// Main app component
-const App = () => {
-  const [state, dispatch] = useReducer(studyReducer, {
-    courses: initialCourses,
-    activeCourse: initialCourses[0].code,
-    activeTab: 'topics'
+  raw.courses.forEach(course => {
+    course.id = uuid();
+    course.chapters.forEach(ch => {
+      ch.id = uuid();
+      ch.subtopics = ch.subtopics.map(title => ({ id: uuid(), title, done: false }));
+    });
   });
+  return raw;
+}
 
-  const [addCourseModalOpen, setAddCourseModalOpen] = useState(false);
-  const [newCourseCode, setNewCourseCode] = useState('');
-  const [newCourseTitle, setNewCourseTitle] = useState('');
-  const [newCourseDate, setNewCourseDate] = useState('');
+/************** Alpine Component **************/
+function studyHubApp() {
+  return {
+    /* ---------- Reactive State ---------- */
+    data: prepareData(),
+    notes: [],
+    flashcards: [],
+    quickSheets: [],
+    settings: { encrypted: false },
 
-  const activeCourseData = state.courses.find(c => c.code === state.activeCourse);
+    /* Routing */
+    route: 'dashboard',
+    currentCourse: null,
+    courseTab: 'topics',
 
-  const handleAddCourse = () => {
-    if (newCourseCode.trim() && newCourseTitle.trim() && newCourseDate) {
-      const course = {
-        code: newCourseCode.trim(),
-        title: newCourseTitle.trim(),
-        examDate: newCourseDate,
-        topics: [],
-        customTopics: [],
-        notes: [],
-        flashcards: [],
-        quickRevisions: [],
-        completedTopics: []
+    /* UI flags */
+    sidebarCollapsed: false,
+    modalOpen: false,
+    modalView: '',
+    quillInstance: null,
+
+    /* Forms */
+    chapterForm: { id: null, title: '', course: null },
+    subtopicForm: { id: null, title: '', chapter: null },
+    noteForm: { id: null, courseId: null, title: '', html: '' },
+    flashForm: { id: null, courseId: null, front: '', back: '' },
+    qsForm: { id: null, courseId: null, title: '', bulletsText: '' },
+
+    qrSearch: '',
+
+    /* ---------- Lifecycle ---------- */
+    init() {
+      /* Setup routing from hash */
+      this.handleHashChange();
+      window.addEventListener('hashchange', () => this.handleHashChange());
+
+      /* Pre-generate sample flashcards (one per first subtopic of each chapter) */
+      this.data.courses.forEach(course => {
+        course.chapters.forEach(chapter => {
+          if (chapter.subtopics[0]) {
+            const sub = chapter.subtopics[0];
+            this.flashcards.push({
+              id: uuid(),
+              courseId: course.id,
+              front: sub.title,
+              back: `Explain: ${sub.title}`,
+              flipped: false,
+              updated: Date.now()
+            });
+          }
+        });
+      });
+    },
+
+    /* ---------- Routing ---------- */
+    navigate(hash) { window.location.hash = hash; },
+
+    handleHashChange() {
+      const hash = window.location.hash || '#/dashboard';
+      const parts = hash.substring(2).split('/'); // remove '#/'
+      this.route = parts[0] || 'dashboard';
+      if (this.route === 'course' && parts[1]) {
+        const id = parts[1];
+        this.currentCourse = this.data.courses.find(c => c.id === id) || null;
+        if (!this.currentCourse) this.route = 'dashboard';
+      } else {
+        this.currentCourse = null;
+      }
+    },
+
+    /* ---------- Utils ---------- */
+    formatDate(dateStr) { return dayjs(dateStr).format('DD MMM YYYY'); },
+    daysLeft(dateStr) { return dayjs(dateStr).diff(dayjs(), 'day'); },
+    courseProgress(course) {
+      const total = course.chapters.reduce((a, ch) => a + ch.subtopics.length, 0);
+      const done = course.chapters.reduce((a, ch) => a + ch.subtopics.filter(s => s.done).length, 0);
+      return total ? (done / total) * 100 : 0;
+    },
+
+    /* ---------- Chapter CRUD ---------- */
+    openChapterModal(course) {
+      this.chapterForm = { id: null, title: '', course };
+      this.modalView = 'chapter';
+      this.modalOpen = true;
+    },
+    editChapter(course, ch) {
+      this.chapterForm = { id: ch.id, title: ch.title, course };
+      this.modalView = 'chapter';
+      this.modalOpen = true;
+    },
+    saveChapter() {
+      const { id, title, course } = this.chapterForm;
+      if (!title.trim()) return;
+      if (id) {
+        const chapter = course.chapters.find(c => c.id === id);
+        if (chapter) chapter.title = title;
+      } else {
+        course.chapters.push({ id: uuid(), title, subtopics: [] });
+      }
+      this.closeModal();
+    },
+    deleteChapter(course, ch) {
+      if (confirm('Delete chapter?')) {
+        course.chapters = course.chapters.filter(c => c.id !== ch.id);
+      }
+    },
+
+    /* ---------- Subtopic CRUD ---------- */
+    addSubtopic(chapter) {
+      this.subtopicForm = { id: null, title: '', chapter };
+      this.modalView = 'subtopic';
+      this.modalOpen = true;
+    },
+    editSubtopic(chapter, sub) {
+      this.subtopicForm = { id: sub.id, title: sub.title, chapter };
+      this.modalView = 'subtopic';
+      this.modalOpen = true;
+    },
+    saveSubtopic() {
+      const { id, title, chapter } = this.subtopicForm;
+      if (!title.trim()) return;
+      if (id) {
+        const s = chapter.subtopics.find(st => st.id === id);
+        if (s) s.title = title;
+      } else {
+        chapter.subtopics.push({ id: uuid(), title, done: false });
+      }
+      this.closeModal();
+    },
+    deleteSubtopic(chapter, sub) {
+      if (confirm('Delete subtopic?')) {
+        chapter.subtopics = chapter.subtopics.filter(s => s.id !== sub.id);
+      }
+    },
+    toggleSubtopicDone(course, chapter, sub, e) {
+      sub.done = e.target.checked;
+    },
+
+    /* ---------- Notes CRUD ---------- */
+    notesByCourse(courseId) { return this.notes.filter(n => n.courseId === courseId); },
+    openNoteModal(note) {
+      if (note) {
+        this.noteForm = { ...note };
+      } else {
+        this.noteForm = { id: null, courseId: this.currentCourse.id, title: '', html: '' };
+      }
+      this.modalView = 'note';
+      this.modalOpen = true;
+    },
+    initQuill() {
+      this.$nextTick(() => {
+        const el = document.getElementById('quillEditor');
+        if (el && typeof Quill !== 'undefined') {
+          this.quillInstance = new Quill(el, { theme: 'snow' });
+          this.quillInstance.root.innerHTML = this.noteForm.html || '';
+          this.quillInstance.on('text-change', () => {
+            this.noteForm.html = this.quillInstance.root.innerHTML;
+          });
+        }
+      });
+    },
+    saveNote() {
+      this.noteForm.updated = Date.now();
+      if (this.noteForm.id) {
+        const idx = this.notes.findIndex(n => n.id === this.noteForm.id);
+        if (idx !== -1) this.notes.splice(idx, 1, { ...this.noteForm });
+      } else {
+        this.noteForm.id = uuid();
+        this.notes.push({ ...this.noteForm });
+      }
+      this.closeModal();
+    },
+    deleteNote(note) {
+      if (confirm('Delete note?')) {
+        this.notes = this.notes.filter(n => n.id !== note.id);
+      }
+    },
+
+    /* ---------- Flashcards CRUD ---------- */
+    flashcardsByCourse(courseId) { return this.flashcards.filter(f => f.courseId === courseId); },
+    openFlashcardModal(card) {
+      if (card) this.flashForm = { ...card };
+      else this.flashForm = { id: null, courseId: this.currentCourse.id, front: '', back: '' };
+      this.modalView = 'flashcard';
+      this.modalOpen = true;
+    },
+    saveFlashcard() {
+      this.flashForm.updated = Date.now();
+      if (this.flashForm.id) {
+        const idx = this.flashcards.findIndex(f => f.id === this.flashForm.id);
+        if (idx !== -1) this.flashcards.splice(idx, 1, { ...this.flashForm, flipped: false });
+      } else {
+        this.flashForm.id = uuid();
+        this.flashcards.push({ ...this.flashForm, flipped: false });
+      }
+      this.closeModal();
+    },
+    deleteFlashcard(card) {
+      if (confirm('Delete flashcard?')) {
+        this.flashcards = this.flashcards.filter(f => f.id !== card.id);
+      }
+    },
+    flipCard(card) { card.flipped = !card.flipped; },
+    shuffleFlashcards() { this.flashcards = [...this.flashcards].sort(() => Math.random() - 0.5); },
+
+    /* ---------- Quick Sheets CRUD ---------- */
+    quickSheetsFiltered() {
+      const q = this.qrSearch.trim().toLowerCase();
+      return q ? this.quickSheets.filter(s => s.title.toLowerCase().includes(q)) : this.quickSheets;
+    },
+    openQuickSheetModal(sheet) {
+      if (sheet) {
+        this.qsForm = { ...sheet, bulletsText: sheet.bullets.join('\n') };
+      } else {
+        this.qsForm = { id: null, courseId: null, title: '', bulletsText: '' };
+      }
+      this.modalView = 'quicksheet';
+      this.modalOpen = true;
+    },
+    saveQuickSheet() {
+      const bullets = this.qsForm.bulletsText.split('\n').map(b => b.trim()).filter(Boolean);
+      const sheetData = { ...this.qsForm, bullets, updated: Date.now() };
+      if (sheetData.id) {
+        const idx = this.quickSheets.findIndex(q => q.id === sheetData.id);
+        if (idx !== -1) this.quickSheets.splice(idx, 1, sheetData);
+      } else {
+        sheetData.id = uuid();
+        this.quickSheets.push(sheetData);
+      }
+      this.closeModal();
+    },
+    deleteQuickSheet(sheet) {
+      if (confirm('Delete sheet?')) {
+        this.quickSheets = this.quickSheets.filter(q => q.id !== sheet.id);
+      }
+    },
+
+    /* ---------- Modal helpers ---------- */
+    closeModal() {
+      this.modalOpen = false;
+      this.modalView = '';
+      if (this.quillInstance) {
+        this.quillInstance = null;
+      }
+    },
+
+    /* ---------- Settings ---------- */
+    toggleEncryption(ev) {
+      this.settings.encrypted = ev.target.checked;
+      alert('Encryption setting toggled. Data is stored in-memory only.');
+    },
+    exportData() {
+      const payload = {
+        data: this.data,
+        notes: this.notes,
+        flashcards: this.flashcards,
+        quickSheets: this.quickSheets
       };
-
-      dispatch({ type: 'ADD_COURSE', payload: course });
-      setAddCourseModalOpen(false);
-      setNewCourseCode('');
-      setNewCourseTitle('');
-      setNewCourseDate('');
+      let json = JSON.stringify(payload);
+      if (this.settings.encrypted) {
+        const pass = prompt('Enter passphrase to encrypt backup:');
+        if (!pass) return;
+        json = CryptoJS.AES.encrypt(json, pass).toString();
+      }
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'studyhub-backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+    importData(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        let text = ev.target.result;
+        try {
+          let obj;
+          try {
+            obj = JSON.parse(text);
+          } catch (_) {
+            const pass = prompt('Encrypted backup detected. Enter passphrase:');
+            if (!pass) return;
+            const decrypted = CryptoJS.AES.decrypt(text, pass).toString(CryptoJS.enc.Utf8);
+            obj = JSON.parse(decrypted);
+          }
+          ['data', 'notes', 'flashcards', 'quickSheets'].forEach(k => {
+            if (obj[k]) this[k] = obj[k];
+          });
+          alert('Import successful!');
+        } catch (err) {
+          alert('Import failed: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
     }
   };
-
-  const renderTabContent = () => {
-    switch (state.activeTab) {
-      case 'topics':
-        return <TopicsTab course={activeCourseData} dispatch={dispatch} />;
-      case 'notes':
-        return <NotesTab course={activeCourseData} dispatch={dispatch} />;
-      case 'flashcards':
-        return <FlashcardsTab course={activeCourseData} dispatch={dispatch} />;
-      case 'quickRevision':
-        return <QuickRevisionTab course={activeCourseData} dispatch={dispatch} />;
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <StudyContext.Provider value={{ state, dispatch }}>
-      <div className="app">
-        <Header onAddCourse={() => setAddCourseModalOpen(true)} />
-        
-        <div className="layout">
-          <Sidebar 
-            courses={state.courses}
-            activeCourse={state.activeCourse}
-            onCourseSelect={(code) => dispatch({ type: 'SET_ACTIVE_COURSE', payload: code })}
-          />
-
-          <main className="main">
-            {/* Mobile course selector */}
-            <div className="mobile-sidebar-select">
-              <select 
-                className="form-control course-select"
-                value={state.activeCourse}
-                onChange={(e) => dispatch({ type: 'SET_ACTIVE_COURSE', payload: e.target.value })}
-              >
-                {state.courses.map(course => (
-                  <option key={course.code} value={course.code}>
-                    {course.code} - {course.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Tabs */}
-            <div className="tabs">
-              <div 
-                className={`tab ${state.activeTab === 'topics' ? 'active' : ''}`}
-                onClick={() => dispatch({ type: 'SET_ACTIVE_TAB', payload: 'topics' })}
-              >
-                Topics
-              </div>
-              <div 
-                className={`tab ${state.activeTab === 'notes' ? 'active' : ''}`}
-                onClick={() => dispatch({ type: 'SET_ACTIVE_TAB', payload: 'notes' })}
-              >
-                Notes
-              </div>
-              <div 
-                className={`tab ${state.activeTab === 'flashcards' ? 'active' : ''}`}
-                onClick={() => dispatch({ type: 'SET_ACTIVE_TAB', payload: 'flashcards' })}
-              >
-                Flashcards
-              </div>
-              <div 
-                className={`tab ${state.activeTab === 'quickRevision' ? 'active' : ''}`}
-                onClick={() => dispatch({ type: 'SET_ACTIVE_TAB', payload: 'quickRevision' })}
-              >
-                Quick Revision
-              </div>
-            </div>
-
-            {/* Tab content */}
-            {renderTabContent()}
-          </main>
-        </div>
-
-        {/* Add Course Modal */}
-        <Modal isOpen={addCourseModalOpen} onClose={() => setAddCourseModalOpen(false)}>
-          <h3>Add New Course</h3>
-          <div className="form-group">
-            <label className="form-label">Course Code</label>
-            <input
-              type="text"
-              className="form-control"
-              value={newCourseCode}
-              onChange={(e) => setNewCourseCode(e.target.value)}
-              placeholder="e.g., CS101"
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Course Title</label>
-            <input
-              type="text"
-              className="form-control"
-              value={newCourseTitle}
-              onChange={(e) => setNewCourseTitle(e.target.value)}
-              placeholder="e.g., Introduction to Computer Science"
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Exam Date</label>
-            <input
-              type="date"
-              className="form-control"
-              value={newCourseDate}
-              onChange={(e) => setNewCourseDate(e.target.value)}
-            />
-          </div>
-          <div className="flex gap-8 justify-end">
-            <button className="btn btn--outline" onClick={() => setAddCourseModalOpen(false)}>
-              Cancel
-            </button>
-            <button className="btn btn--primary" onClick={handleAddCourse}>
-              Add Course
-            </button>
-          </div>
-        </Modal>
-      </div>
-    </StudyContext.Provider>
-  );
-};
-
-// Render the app
-ReactDOM.render(<App />, document.getElementById('root'));
+}
