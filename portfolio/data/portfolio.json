@@ -1,0 +1,118 @@
+{
+  "profile": {
+    "name": "Your Name",
+    "tagline": "Video Editor · Audio Engineer · Podcast Producer",
+    "location": "Kathmandu, Nepal",
+    "bio": "I craft compelling audio-visual stories from the heart of Kathmandu. Specialising in video editing, audio engineering, and podcast production — with an eye for detail and an ear for nuance.",
+    "email": "your@email.com",
+    "instagram": "https://instagram.com/yourhandle",
+    "youtube": "https://youtube.com/yourchannel",
+    "avatar": "assets/avatar.jpg"
+  },
+  "services": [
+    {
+      "id": "video",
+      "icon": "▶",
+      "title": "Video Editing",
+      "description": "From raw footage to polished final cut. Corporate, documentary, interviews, and creative content."
+    },
+    {
+      "id": "audio",
+      "icon": "◉",
+      "title": "Audio Engineering",
+      "description": "Professional mixing, mastering, noise reduction, and sound design for any format."
+    },
+    {
+      "id": "podcast",
+      "icon": "◎",
+      "title": "Podcast Production",
+      "description": "End-to-end podcast production — recording, editing, engineering, and delivery-ready masters."
+    }
+  ],
+  "work": {
+    "video": [
+      {
+        "id": "v1",
+        "title": "Hospital Communications Series",
+        "client": "Confidential — Healthcare",
+        "description": "6-episode weekly production including recording, editing, and audio engineering.",
+        "thumbnail": "assets/thumbnails/v1.jpg",
+        "type": "youtube",
+        "url": "https://youtube.com/watch?v=YOURID",
+        "tags": ["Interview", "Corporate", "Multi-episode"]
+      },
+      {
+        "id": "v2",
+        "title": "Documentary Short",
+        "client": "Independent",
+        "description": "Short-form documentary with original score and sound design.",
+        "thumbnail": "assets/thumbnails/v2.jpg",
+        "type": "youtube",
+        "url": "https://youtube.com/watch?v=YOURID",
+        "tags": ["Documentary", "Sound Design"]
+      }
+    ],
+    "audio": [
+      {
+        "id": "a1",
+        "title": "Corporate Interview Mix",
+        "client": "Healthcare Client",
+        "description": "Full audio engineering chain — lavalier cleanup, EQ, compression, and mastering to -16 LUFS.",
+        "type": "audio",
+        "url": "assets/audio/sample1.mp3",
+        "waveform": "assets/audio/sample1-waveform.png",
+        "duration": "3:42",
+        "tags": ["Dialogue", "Engineering", "Mastering"]
+      },
+      {
+        "id": "a2",
+        "title": "Podcast Episode Master",
+        "client": "Podcast Client",
+        "description": "Multi-track podcast session with two guests — mixed, mastered, and delivered for Spotify.",
+        "type": "audio",
+        "url": "assets/audio/sample2.mp3",
+        "duration": "8:15",
+        "tags": ["Podcast", "Multi-track", "Mastering"]
+      }
+    ],
+    "podcast": [
+      {
+        "id": "p1",
+        "title": "Weekly Hospital Podcast",
+        "client": "Healthcare Institution",
+        "description": "Ongoing weekly production — 6 episodes, 40 minutes each. Recording, audio engineering, and delivery.",
+        "type": "embed",
+        "url": "https://open.spotify.com/embed/episode/YOURID",
+        "tags": ["Ongoing", "Healthcare", "6 eps/week"]
+      },
+      {
+        "id": "p2",
+        "title": "Interview Series",
+        "client": "Confidential",
+        "description": "Monthly long-form interview series. Full production from studio setup to final delivery.",
+        "type": "audio",
+        "url": "assets/audio/podcast-sample.mp3",
+        "duration": "12:30",
+        "tags": ["Interview", "Long-form"]
+      }
+    ]
+  },
+  "gear": [
+    "Sony a6700",
+    "Sigma 16mm f/1.4",
+    "Tamron 70-180mm f/2.8",
+    "DJI Mic Mini",
+    "Zoom H8",
+    "Shure SM57 + SM58",
+    "AKG P420",
+    "Smallrig Cage",
+    "DJI Mini 3"
+  ],
+  "software": [
+    "DaVinci Resolve",
+    "iZotope RX",
+    "Reaper",
+    "Adobe Premiere",
+    "Audacity"
+  ]
+}
