@@ -33,43 +33,43 @@
     "video": [
       {
         "id": "v1",
-        "title": "Lower Likhu Hydropower Project",
-        "client": "Sanima Hydro",
-        "description": "Video production for the 28.1 MW Lower Likhu Hydropower Project in Ramechhap, developed by Swet Ganga Hydropower & Construction Ltd. and financed by Sanima Bank.",
-        "thumbnail": "",
+        "title": "Dr. Anish Ghimire: A Conversation About Environmental Engineering",
+        "client": "FECAM — KU Environmental Engineering & Science Club",
+        "description": "Digo Podcast #1 — In conversation with Dr. Anish Ghimire, Environmental Engineer and Coordinator of the Environmental Engineering program at Kathmandu University.",
+        "thumbnail": "https://img.youtube.com/vi/OGbaB13vaYU/maxresdefault.jpg",
         "type": "youtube",
         "url": "https://youtu.be/OGbaB13vaYU",
-        "tags": ["Corporate", "Hydropower", "Documentary"]
+        "tags": ["Digo Podcast", "Interview", "FECAM", "Episode 1"]
       },
       {
         "id": "v2",
-        "title": "Mathillo Mailung Project",
-        "client": "Sanima Hydro",
-        "description": "Video production for the 14.3 MW Mathillo Mailung Khola Jalvidhyut Aayojana project in Rasuwa district.",
-        "thumbnail": "",
+        "title": "Dr. Kumud Raj Kafle: Environmental Studies and Seismic Risks of Nepal",
+        "client": "FECAM — KU Environmental Engineering & Science Club",
+        "description": "Digo Podcast #2 — A conversation with Dr. Kumud Raj Kafle on environmental studies and the seismic risks facing Nepal.",
+        "thumbnail": "https://img.youtube.com/vi/Z5D9CHxrc1g/maxresdefault.jpg",
         "type": "youtube",
         "url": "https://youtu.be/Z5D9CHxrc1g",
-        "tags": ["Corporate", "Hydropower", "Rasuwa"]
+        "tags": ["Digo Podcast", "Interview", "FECAM", "Episode 2"]
       },
       {
         "id": "v3",
-        "title": "Bavari Construction AGM",
-        "client": "Bavari Construction",
-        "description": "Full event video production for the Annual General Meeting — multi-camera coverage, editing, and delivery.",
-        "thumbnail": "",
+        "title": "Dr. Bikash Adhikari: Vice-Chairperson of Nepal Engineering Council",
+        "client": "FECAM — KU Environmental Engineering & Science Club",
+        "description": "Digo Podcast — In conversation with Dr. Bikash Adhikari, Vice-Chairperson of the Nepal Engineering Council (NEC).",
+        "thumbnail": "https://img.youtube.com/vi/KojcgaWzxVI/maxresdefault.jpg",
         "type": "youtube",
         "url": "https://youtu.be/KojcgaWzxVI",
-        "tags": ["AGM", "Corporate Event", "Multi-camera"]
+        "tags": ["Digo Podcast", "Interview", "FECAM", "NEC"]
       },
       {
         "id": "v4",
-        "title": "Annual General Meeting",
-        "client": "Corporate Client",
-        "description": "Annual General Meeting video production — full event coverage, editing, and professional delivery.",
-        "thumbnail": "",
+        "title": "Dr. Dhundi Raj Pathak: President of CREEW",
+        "client": "FECAM — KU Environmental Engineering & Science Club",
+        "description": "Digo Podcast — Conversation with Dr. Dhundi Raj Pathak, President of the Center of Research for Environment, Energy & Water (CREEW).",
+        "thumbnail": "https://img.youtube.com/vi/PwHWStQWshA/maxresdefault.jpg",
         "type": "youtube",
         "url": "https://youtu.be/PwHWStQWshA",
-        "tags": ["AGM", "Corporate Event", "Event Coverage"]
+        "tags": ["Digo Podcast", "Interview", "FECAM", "CREEW"]
       },
       {
         "id": "v5",

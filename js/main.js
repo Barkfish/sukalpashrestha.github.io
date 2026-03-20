@@ -4,10 +4,14 @@
 let DATA = {};
 
 async function init() {
-  try {
-    const res = await fetch('data/portfolio.json');
-    DATA = await res.json();
-  } catch(e) {
+  const paths = ['data/portfolio.json', './data/portfolio.json'];
+  for (const path of paths) {
+    try {
+      const res = await fetch(path);
+      if (res.ok) { DATA = await res.json(); break; }
+    } catch(e) { /* try next */ }
+  }
+  if (!Object.keys(DATA).length) {
     console.warn('Could not load portfolio.json, using fallback');
     DATA = getFallback();
   }
@@ -89,13 +93,22 @@ function renderVideoPanel() {
 }
 
 function videoCard(v) {
-  const thumb = v.thumbnail
-    ? `<img src="${v.thumbnail}" alt="${v.title}" loading="lazy">`
-    : `<div class="video-thumb-placeholder"><span class="thumb-icon">▶</span></div>`;
+  let thumbHtml;
+  if (v.thumbnail) {
+    thumbHtml = `<img src="${v.thumbnail}" alt="${v.title}" loading="lazy">`;
+  } else if (v.type === 'youtube') {
+    const id = getYouTubeId(v.url);
+    const src = id ? `https://img.youtube.com/vi/${id}/mqdefault.jpg` : null;
+    thumbHtml = src
+      ? `<img src="${src}" alt="${v.title}" loading="lazy">`
+      : `<div class="video-thumb-placeholder"><span class="thumb-icon">▶</span></div>`;
+  } else {
+    thumbHtml = `<div class="video-thumb-placeholder"><span class="thumb-icon">▶</span></div>`;
+  }
   return `
     <div class="video-card reveal" data-url="${v.url || ''}" data-type="${v.type || 'youtube'}" onclick="openVideo(this)">
       <div class="video-thumb">
-        ${thumb}
+        ${thumbHtml}
         <div class="play-overlay"><div class="play-btn">▶</div></div>
       </div>
       <div class="video-info">
@@ -290,15 +303,30 @@ function resetWaveform(el) {
 }
 
 /* ─── Video Lightbox ─── */
+function getYouTubeId(url) {
+  if (!url) return null;
+  // youtu.be/ID or youtu.be/ID?si=...
+  const short = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (short) return short[1];
+  // youtube.com/watch?v=ID
+  const long = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (long) return long[1];
+  // youtube.com/embed/ID
+  const embed = url.match(/embed\/([a-zA-Z0-9_-]{11})/);
+  if (embed) return embed[1];
+  return null;
+}
+
 function openVideo(card) {
   const url = card.dataset.url;
   const type = card.dataset.type;
-  if (!url || url.includes('YOURID')) return;
+  if (!url) return;
 
   let embedUrl = url;
   if (type === 'youtube') {
-    const id = url.match(/(?:v=|youtu\.be\/)([\w-]+)/)?.[1];
-    if (id) embedUrl = `https://www.youtube.com/embed/${id}?autoplay=1`;
+    const id = getYouTubeId(url);
+    if (id) embedUrl = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+    else return;
   }
 
   const lb = document.getElementById('lightbox');
