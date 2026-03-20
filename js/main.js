@@ -27,9 +27,25 @@ function render() {
   renderTicker();
   renderServices();
   renderWork();
+  renderExperience();
   renderGear();
   renderContact();
   renderFooter();
+}
+
+function renderExperience() {
+  const grid = document.getElementById('exp-grid');
+  const items = DATA.experience || [];
+  if (!items.length) { if(grid) grid.innerHTML = ''; return; }
+  if (!grid) return;
+  grid.innerHTML = items.map(e => `
+    <div class="exp-card reveal">
+      <div class="exp-role">${e.role}</div>
+      <div class="exp-org">${e.org}</div>
+      <div class="exp-period">${e.period}</div>
+      <p class="exp-desc">${e.desc}</p>
+    </div>
+  `).join('');
 }
 
 function renderProfile() {

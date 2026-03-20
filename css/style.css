@@ -627,3 +627,59 @@ footer {
   .hero-actions { flex-direction: column; }
   .btn-primary, .btn-ghost { text-align: center; }
 }
+
+/* ─── 3D Canvas ─── */
+#bg-canvas {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  width: 100%; height: 100%;
+}
+body > *:not(#bg-canvas) { position: relative; z-index: 1; }
+
+/* ─── Experience section ─── */
+.exp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.exp-card {
+  background: var(--bg2);
+  padding: 2rem;
+  transition: background 0.3s;
+  position: relative;
+}
+.exp-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 2px; height: 0;
+  background: var(--accent);
+  transition: height 0.4s var(--ease);
+}
+.exp-card:hover { background: var(--surface); }
+.exp-card:hover::before { height: 100%; }
+.exp-role {
+  font-family: var(--ff-serif);
+  font-size: 1.1rem; color: var(--text);
+  margin-bottom: 0.2rem;
+}
+.exp-org {
+  font-family: var(--ff-mono);
+  font-size: 0.7rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent);
+  margin-bottom: 0.2rem;
+}
+.exp-period {
+  font-family: var(--ff-mono);
+  font-size: 0.65rem; color: var(--text3);
+  margin-bottom: 0.75rem;
+}
+.exp-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.6; }
+
+/* ─── Hero background fix (transparent over canvas) ─── */
+#hero { background: transparent; }
+section { background: rgba(10,10,8,0.82); backdrop-filter: blur(2px); }
+section:nth-child(even) { background: rgba(17,17,16,0.88); }
+#nav.scrolled { background: rgba(10,10,8,0.92); }
+footer { background: rgba(10,10,8,0.95); }
