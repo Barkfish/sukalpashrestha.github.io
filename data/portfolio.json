@@ -3,7 +3,7 @@
     "name": "Your Name",
     "tagline": "Video Editor · Audio Engineer · Podcast Producer",
     "location": "Kathmandu, Nepal",
-    "bio": "I craft compelling audio-visual stories from the heart of Kathmandu. Specialising in video editing, audio engineering, and podcast production — with an eye for detail and an ear for nuance.",
+    "bio": "I craft compelling audio-visual stories from the heart of Kathmandu. Specialising in video editing, audio engineering, and podcast production — working with hydropower companies, institutions, and independent creators across Nepal.",
     "email": "your@email.com",
     "instagram": "https://instagram.com/yourhandle",
     "youtube": "https://youtube.com/yourchannel",
@@ -14,105 +14,137 @@
       "id": "video",
       "icon": "▶",
       "title": "Video Editing",
-      "description": "From raw footage to polished final cut. Corporate, documentary, interviews, and creative content."
+      "description": "From raw footage to polished final cut. Corporate events, AGMs, documentary, interviews, and creative content for institutions and independent clients."
     },
     {
       "id": "audio",
       "icon": "◉",
       "title": "Audio Engineering",
-      "description": "Professional mixing, mastering, noise reduction, and sound design for any format."
+      "description": "Professional recording, mixing, mastering, noise reduction, and sound design. Dialogue cleanup to broadcast-ready masters."
     },
     {
       "id": "podcast",
       "icon": "◎",
       "title": "Podcast Production",
-      "description": "End-to-end podcast production — recording, editing, engineering, and delivery-ready masters."
+      "description": "End-to-end podcast production — recording, editing, engineering, and delivery-ready masters. Weekly productions for institutional clients."
     }
   ],
   "work": {
     "video": [
       {
         "id": "v1",
-        "title": "Hospital Communications Series",
-        "client": "Confidential — Healthcare",
-        "description": "6-episode weekly production including recording, editing, and audio engineering.",
-        "thumbnail": "assets/thumbnails/v1.jpg",
+        "title": "Lower Likhu Hydropower Project",
+        "client": "Sanima Hydro",
+        "description": "Video production for the 28.1 MW Lower Likhu Hydropower Project in Ramechhap, developed by Swet Ganga Hydropower & Construction Ltd. and financed by Sanima Bank.",
+        "thumbnail": "",
         "type": "youtube",
-        "url": "https://youtube.com/watch?v=YOURID",
-        "tags": ["Interview", "Corporate", "Multi-episode"]
+        "url": "https://youtu.be/OGbaB13vaYU",
+        "tags": ["Corporate", "Hydropower", "Documentary"]
       },
       {
         "id": "v2",
-        "title": "Documentary Short",
-        "client": "Independent",
-        "description": "Short-form documentary with original score and sound design.",
-        "thumbnail": "assets/thumbnails/v2.jpg",
+        "title": "Mathillo Mailung Project",
+        "client": "Sanima Hydro",
+        "description": "Video production for the 14.3 MW Mathillo Mailung Khola Jalvidhyut Aayojana project in Rasuwa district.",
+        "thumbnail": "",
         "type": "youtube",
-        "url": "https://youtube.com/watch?v=YOURID",
-        "tags": ["Documentary", "Sound Design"]
+        "url": "https://youtu.be/Z5D9CHxrc1g",
+        "tags": ["Corporate", "Hydropower", "Rasuwa"]
+      },
+      {
+        "id": "v3",
+        "title": "Bavari Construction AGM",
+        "client": "Bavari Construction",
+        "description": "Full event video production for the Annual General Meeting — multi-camera coverage, editing, and delivery.",
+        "thumbnail": "",
+        "type": "youtube",
+        "url": "https://youtu.be/KojcgaWzxVI",
+        "tags": ["AGM", "Corporate Event", "Multi-camera"]
+      },
+      {
+        "id": "v4",
+        "title": "Annual General Meeting",
+        "client": "Corporate Client",
+        "description": "Annual General Meeting video production — full event coverage, editing, and professional delivery.",
+        "thumbnail": "",
+        "type": "youtube",
+        "url": "https://youtu.be/PwHWStQWshA",
+        "tags": ["AGM", "Corporate Event", "Event Coverage"]
+      },
+      {
+        "id": "v5",
+        "title": "KU Robotics Club",
+        "client": "Kathmandu University Robotics Club",
+        "description": "Recording and video production for KU Robotics Club — events, showcases, and club activities. (Upload coming soon)",
+        "thumbnail": "",
+        "type": "local",
+        "url": "",
+        "tags": ["University", "Robotics", "Event"]
       }
     ],
     "audio": [
       {
         "id": "a1",
-        "title": "Corporate Interview Mix",
-        "client": "Healthcare Client",
-        "description": "Full audio engineering chain — lavalier cleanup, EQ, compression, and mastering to -16 LUFS.",
+        "title": "Podcast with Ramesh Maskey Sir",
+        "client": "KU Robotics Club",
+        "description": "Full podcast production — recording, audio engineering, noise reduction, mixing and mastering. Long-form interview with Ramesh Maskey Sir.",
         "type": "audio",
-        "url": "assets/audio/sample1.mp3",
-        "waveform": "assets/audio/sample1-waveform.png",
-        "duration": "3:42",
-        "tags": ["Dialogue", "Engineering", "Mastering"]
+        "url": "",
+        "duration": "--:--",
+        "tags": ["Podcast", "Interview", "Engineering"]
       },
       {
         "id": "a2",
-        "title": "Podcast Episode Master",
-        "client": "Podcast Client",
-        "description": "Multi-track podcast session with two guests — mixed, mastered, and delivered for Spotify.",
+        "title": "Barasinghe Production Plant Interview",
+        "client": "Independent",
+        "description": "On-location interview recording and audio post-production for the Barasinghe Production Plant feature.",
         "type": "audio",
-        "url": "assets/audio/sample2.mp3",
-        "duration": "8:15",
-        "tags": ["Podcast", "Multi-track", "Mastering"]
+        "url": "",
+        "duration": "--:--",
+        "tags": ["Interview", "On-location", "Post-production"]
       }
     ],
     "podcast": [
       {
         "id": "p1",
-        "title": "Weekly Hospital Podcast",
-        "client": "Healthcare Institution",
-        "description": "Ongoing weekly production — 6 episodes, 40 minutes each. Recording, audio engineering, and delivery.",
-        "type": "embed",
-        "url": "https://open.spotify.com/embed/episode/YOURID",
-        "tags": ["Ongoing", "Healthcare", "6 eps/week"]
+        "title": "Hospital Podcast Series",
+        "client": "Healthcare Institution — Kathmandu",
+        "description": "Weekly podcast production — 6 episodes per week, 40 minutes each. Full service: recording, audio engineering, editing, and delivery. Ongoing institutional contract.",
+        "type": "audio",
+        "url": "",
+        "duration": "--:--",
+        "tags": ["Ongoing", "Healthcare", "6 eps/week", "Audio Engineering"]
       },
       {
         "id": "p2",
-        "title": "Interview Series",
-        "client": "Confidential",
-        "description": "Monthly long-form interview series. Full production from studio setup to final delivery.",
+        "title": "Interview with Ramesh Maskey Sir",
+        "client": "KU Robotics Club",
+        "description": "Long-form podcast interview recorded and produced for Kathmandu University Robotics Club. Full production from recording to mastered deliverable.",
         "type": "audio",
-        "url": "assets/audio/podcast-sample.mp3",
-        "duration": "12:30",
-        "tags": ["Interview", "Long-form"]
+        "url": "",
+        "duration": "--:--",
+        "tags": ["Interview", "University", "Long-form"]
       }
     ]
   },
   "gear": [
     "Sony a6700",
-    "Sigma 16mm f/1.4",
+    "Sigma 16mm f/1.4 DC DN",
     "Tamron 70-180mm f/2.8",
     "DJI Mic Mini",
     "Zoom H8",
-    "Shure SM57 + SM58",
+    "Shure SM57",
+    "Shure SM58",
     "AKG P420",
-    "Smallrig Cage",
-    "DJI Mini 3"
+    "Smallrig Cage + Top Handle",
+    "DJI Mini 3 Drone",
+    "Video Tripod"
   ],
   "software": [
     "DaVinci Resolve",
     "iZotope RX",
     "Reaper",
-    "Adobe Premiere",
-    "Audacity"
+    "Audacity",
+    "Adobe Premiere Pro"
   ]
 }
