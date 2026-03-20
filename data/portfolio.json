@@ -1,81 +1,93 @@
 {
   "profile": {
-    "name": "Your Name",
+    "name": "Sukalpa Das Shrestha",
     "tagline": "Video Editor · Audio Engineer · Podcast Producer",
-    "location": "Kathmandu, Nepal",
-    "bio": "I craft compelling audio-visual stories from the heart of Kathmandu. Specialising in video editing, audio engineering, and podcast production — working with hydropower companies, institutions, and independent creators across Nepal.",
-    "email": "your@email.com",
+    "location": "Budhanilkantha, Kathmandu",
+    "bio": "Mechanical Engineering student at Kathmandu University with over 10 years of experience in electronics, robotics, and creative media. I specialise in video editing, audio recording and engineering, podcast production, and event audio management — working with institutions, hydropower companies, and independent creators across Nepal.",
+    "email": "shrestha.sukalpa@gmail.com",
     "instagram": "https://instagram.com/yourhandle",
     "youtube": "https://youtube.com/yourchannel",
-    "avatar": "assets/avatar.jpg"
+    "avatar": "assets/avatar.jpg",
+    "phone1": "9869153850",
+    "phone2": "9813449953"
   },
   "services": [
     {
       "id": "video",
       "icon": "▶",
       "title": "Video Editing",
-      "description": "From raw footage to polished final cut. Corporate events, AGMs, documentary, interviews, and creative content for institutions and independent clients."
+      "description": "From raw footage to polished final cut. Corporate events, AGMs, drone footage, documentary, and podcast video for institutions and independent clients."
     },
     {
       "id": "audio",
       "icon": "◉",
       "title": "Audio Engineering",
-      "description": "Professional recording, mixing, mastering, noise reduction, and sound design. Dialogue cleanup to broadcast-ready masters."
+      "description": "Professional recording, mixing, mastering, noise reduction, and sound design. Voice-over narration, music production, and broadcast-ready masters."
     },
     {
       "id": "podcast",
       "icon": "◎",
       "title": "Podcast Production",
-      "description": "End-to-end podcast production — recording, editing, engineering, and delivery-ready masters. Weekly productions for institutional clients."
+      "description": "End-to-end podcast production — recording, audio engineering, editing, music, and delivery-ready masters. Full service from concept to platform."
     }
   ],
   "work": {
     "video": [
       {
         "id": "v1",
-        "title": "Dr. Anish Ghimire: A Conversation About Environmental Engineering",
+        "title": "Dr. Anish Ghimire: A Conversation about Environmental Engineering",
         "client": "FECAM — KU Environmental Engineering & Science Club",
-        "description": "Digo Podcast #1 — In conversation with Dr. Anish Ghimire, Environmental Engineer and Coordinator of the Environmental Engineering program at Kathmandu University.",
-        "thumbnail": "https://img.youtube.com/vi/OGbaB13vaYU/maxresdefault.jpg",
+        "description": "Digo Podcast Episode 1 — Video editing, audio engineering, and production for a conversation with Dr. Anish Ghimire, Environmental Engineer and Coordinator of the Environmental Engineering program at Kathmandu University.",
+        "thumbnail": "",
         "type": "youtube",
         "url": "https://youtu.be/OGbaB13vaYU",
-        "tags": ["Digo Podcast", "Interview", "FECAM", "Episode 1"]
+        "tags": ["Digo Podcast", "FECAM", "Episode 1", "Interview"]
       },
       {
         "id": "v2",
         "title": "Dr. Kumud Raj Kafle: Environmental Studies and Seismic Risks of Nepal",
         "client": "FECAM — KU Environmental Engineering & Science Club",
-        "description": "Digo Podcast #2 — A conversation with Dr. Kumud Raj Kafle on environmental studies and the seismic risks facing Nepal.",
-        "thumbnail": "https://img.youtube.com/vi/Z5D9CHxrc1g/maxresdefault.jpg",
+        "description": "Digo Podcast Episode 2 — Full video and audio production. Dr. Kumud Raj Kafle discusses environmental studies and the seismic risks facing Nepal.",
+        "thumbnail": "",
         "type": "youtube",
         "url": "https://youtu.be/Z5D9CHxrc1g",
-        "tags": ["Digo Podcast", "Interview", "FECAM", "Episode 2"]
+        "tags": ["Digo Podcast", "FECAM", "Episode 2", "Interview"]
       },
       {
         "id": "v3",
-        "title": "Dr. Bikash Adhikari: Vice-Chairperson of Nepal Engineering Council",
+        "title": "Dr. Bikash Adhikari: In Conversation with the Vice-Chairperson of NEC",
         "client": "FECAM — KU Environmental Engineering & Science Club",
-        "description": "Digo Podcast — In conversation with Dr. Bikash Adhikari, Vice-Chairperson of the Nepal Engineering Council (NEC).",
-        "thumbnail": "https://img.youtube.com/vi/KojcgaWzxVI/maxresdefault.jpg",
+        "description": "Digo Podcast — Full production including video editing, audio mixing, and intro music. Conversation with Dr. Bikash Adhikari, Vice-Chairperson of the Nepal Engineering Council.",
+        "thumbnail": "",
         "type": "youtube",
         "url": "https://youtu.be/KojcgaWzxVI",
-        "tags": ["Digo Podcast", "Interview", "FECAM", "NEC"]
+        "tags": ["Digo Podcast", "FECAM", "NEC", "Interview"]
       },
       {
         "id": "v4",
         "title": "Dr. Dhundi Raj Pathak: President of CREEW",
         "client": "FECAM — KU Environmental Engineering & Science Club",
-        "description": "Digo Podcast — Conversation with Dr. Dhundi Raj Pathak, President of the Center of Research for Environment, Energy & Water (CREEW).",
-        "thumbnail": "https://img.youtube.com/vi/PwHWStQWshA/maxresdefault.jpg",
+        "description": "Digo Podcast — Conversation with Dr. Dhundi Raj Pathak, President of the Center of Research for Environment, Energy & Water (CREEW). Full video and audio production.",
+        "thumbnail": "",
         "type": "youtube",
         "url": "https://youtu.be/PwHWStQWshA",
-        "tags": ["Digo Podcast", "Interview", "FECAM", "CREEW"]
+        "tags": ["Digo Podcast", "FECAM", "CREEW", "Interview"]
       },
       {
         "id": "v5",
+        "title": "Sanima Hydro — AGM & Marketing Videos",
+        "client": "Sanima Hydro",
+        "description": "Drone recording, directing, and editing for shareholder Annual General Meetings and marketing showcases of hydropower projects. Voice-over narration recording included.",
+        "thumbnail": "",
+        "type": "local",
+        "url": "",
+        "tags": ["Corporate", "Drone", "AGM", "Hydropower"]
+      },
+      {
+        "id": "v6",
         "title": "KU Robotics Club",
         "client": "Kathmandu University Robotics Club",
-        "description": "Recording and video production for KU Robotics Club — events, showcases, and club activities. (Upload coming soon)",
+        "description": "Recording and video production for KURC events, showcases, and club activities. Sponsorship creative content and club branding.",
         "thumbnail": "",
         "type": "local",
         "url": "",
@@ -85,23 +97,33 @@
     "audio": [
       {
         "id": "a1",
-        "title": "Podcast with Ramesh Maskey Sir",
-        "client": "KU Robotics Club",
-        "description": "Full podcast production — recording, audio engineering, noise reduction, mixing and mastering. Long-form interview with Ramesh Maskey Sir.",
+        "title": "Digo Podcast — Audio Engineering & Music",
+        "client": "FECAM / ENE Club, Kathmandu University",
+        "description": "Full audio recording, editing, mixing, and mastering for the Digo Podcast series. Composed and produced original intro music and background tracks for all episodes.",
         "type": "audio",
         "url": "",
         "duration": "--:--",
-        "tags": ["Podcast", "Interview", "Engineering"]
+        "tags": ["Podcast", "Mixing", "Music Production", "Mastering"]
       },
       {
         "id": "a2",
-        "title": "Barasinghe Production Plant Interview",
-        "client": "Independent",
-        "description": "On-location interview recording and audio post-production for the Barasinghe Production Plant feature.",
+        "title": "Sanima Hydro — Voice-Over Narration",
+        "client": "Sanima Hydro",
+        "description": "Professional narration recording and audio engineering for hydropower project showcase videos. Full recording chain — mic setup, noise reduction, EQ, compression, and delivery.",
         "type": "audio",
         "url": "",
         "duration": "--:--",
-        "tags": ["Interview", "On-location", "Post-production"]
+        "tags": ["Voice-Over", "Corporate", "Narration", "Engineering"]
+      },
+      {
+        "id": "a3",
+        "title": "Event Audio Management",
+        "client": "Aaviyanta Multipurpose Hall / Kamal Mani Theatre",
+        "description": "Stage sound organisation and technical direction for live events. Full PA setup, mix, and live audio engineering for performances and theatrical productions.",
+        "type": "audio",
+        "url": "",
+        "duration": "--:--",
+        "tags": ["Live Sound", "Event", "Theatre", "PA System"]
       }
     ],
     "podcast": [
@@ -109,7 +131,7 @@
         "id": "p1",
         "title": "Hospital Podcast Series",
         "client": "Healthcare Institution — Kathmandu",
-        "description": "Weekly podcast production — 6 episodes per week, 40 minutes each. Full service: recording, audio engineering, editing, and delivery. Ongoing institutional contract.",
+        "description": "Ongoing weekly podcast production — 6 episodes per week, 40 minutes each. Full service: recording, audio engineering, editing, and delivery. Institutional contract.",
         "type": "audio",
         "url": "",
         "duration": "--:--",
@@ -117,16 +139,54 @@
       },
       {
         "id": "p2",
-        "title": "Interview with Ramesh Maskey Sir",
-        "client": "KU Robotics Club",
-        "description": "Long-form podcast interview recorded and produced for Kathmandu University Robotics Club. Full production from recording to mastered deliverable.",
+        "title": "Digo Podcast Series",
+        "client": "FECAM — KU Environmental Engineering & Science Club",
+        "description": "Full podcast production for the Digo Podcast — recording, audio engineering, original intro music composition, video editing, and thumbnail design. Multi-episode series featuring leading engineers and researchers.",
         "type": "audio",
         "url": "",
         "duration": "--:--",
-        "tags": ["Interview", "University", "Long-form"]
+        "tags": ["Digo Podcast", "FECAM", "Music Production", "Multi-episode"]
       }
     ]
   },
+  "experience": [
+    {
+      "role": "Video Editor & Audio Engineer",
+      "org": "Sanima Hydro",
+      "period": "Professional",
+      "desc": "Drone recording, directing, editing for AGMs and hydropower marketing. Professional voice-over narration recording."
+    },
+    {
+      "role": "Audio Recording & Video Production",
+      "org": "Digo Podcast / FECAM, KU",
+      "period": "Professional",
+      "desc": "Full podcast production — audio engineering, music composition, video editing, and thumbnail design."
+    },
+    {
+      "role": "Technical Director — Sound & Lighting",
+      "org": "Kamal Mani Theatre",
+      "period": "Event",
+      "desc": "Directed all sound and lighting production for theatrical performances."
+    },
+    {
+      "role": "Stage Sound Organiser",
+      "org": "Aaviyanta Multipurpose Hall",
+      "period": "Event",
+      "desc": "Managed and coordinated audio setup and live operations for major events."
+    },
+    {
+      "role": "Robotics & IoT Instructor",
+      "org": "Kathmandu University / Rato Bangala School",
+      "period": "2019–2024",
+      "desc": "Taught IoT, Basic Robotics, and Electronics workshops at KU Dhulikhel, KU School of Arts, KU High School, and RBS."
+    },
+    {
+      "role": "Executive Member",
+      "org": "KU Robotics Club (KURC)",
+      "period": "1 year",
+      "desc": "Project Lead for Autonomous Submarine Project. Sponsorship & Creative Team Management. KURC–KUANA Collaboration Lead."
+    }
+  ],
   "gear": [
     "Sony a6700",
     "Sigma 16mm f/1.4 DC DN",
@@ -142,9 +202,12 @@
   ],
   "software": [
     "DaVinci Resolve",
+    "Final Cut Pro",
+    "Adobe Audition",
     "iZotope RX",
     "Reaper",
-    "Audacity",
-    "Adobe Premiere Pro"
+    "Photoshop",
+    "Blender",
+    "Fusion 360"
   ]
 }
