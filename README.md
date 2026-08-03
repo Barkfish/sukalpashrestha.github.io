@@ -1,201 +1,54 @@
-# Portfolio Website
+# MEPP 436 — Advanced Machine Design · Definitive Interactive Guide
 
-A modern, dark editorial portfolio for video editors, audio engineers, and podcast producers. Built as a static site — no server, no database, fully compatible with **GitHub Pages**.
+A self-contained, offline study site built from your own course slides, lecture notes, past papers and reference texts. Everything below runs in a browser — no server, no installation.
 
----
+## How to open
 
-## 🚀 Deploying to GitHub Pages
+Double-click **`index.html`** (or `MEPP436 - Interactive Study Notes.html`) — it opens in any browser and works fully offline. Best viewed in Chrome, Safari or Edge. Keep the `assets/` folder next to the HTML files; the pages load their styling, question banks and figures from it.
 
-1. Create a new GitHub repository (e.g. `yourusername.github.io` for a root site, or any name for a project site)
-2. Upload all files from this folder to the repo
-3. Go to **Settings → Pages**
-4. Under "Source", select **Deploy from a branch → main → / (root)**
-5. Click Save — your site will be live at `https://yourusername.github.io` within a few minutes
+> Equation rendering (MathJax) loads from a CDN, so `study-guide.html`, `last-minute-guide.html` and the Interactive Study Notes need internet the first time you open them — after that the browser caches it and they work offline too.
 
----
+## What's inside
 
-## ✏️ How to Update Your Content
+| File | What it is |
+|---|---|
+| `index.html` | Home hub — exam blueprint and where the marks concentrate. |
+| `MEPP436 - Interactive Study Notes.html` | The full annotated course notes: all ten topics, collapsible sections, sticky sidebar, dark mode, worked examples, slide-vs-redraw figure toggles, an in-page objective quiz drill and a formula sheet. |
+| `study-guide.html` | Complete study guide (Parts I–III) as collapsible sections — click a heading to expand/collapse, jump via the sticky sidebar, search topics, Expand/Collapse all, dark mode. Real slide/textbook figures throughout, properly typeset equations (MathJax), derivations and reference-book elaborations. |
+| `last-minute-guide.html` | Night-before cram sheet, self-quiz style: every topic is a collapsed question — try to answer, then click to reveal the model answer, figures and a worked example. Formulas include a variable glossary and "how to use" notes. Master formula sheet, an interactive revision checklist (ticks saved in your browser), and the individual failure-theory yield-surface diagrams (Rankine, Tresca, St. Venant, Haigh, von Mises) side by side. |
+| `objective-bank.html` | 101 interactive MCQs. Click an option for instant feedback on your choice, the correct answer and a one-line reason. Filter by topic, restrict to past-paper questions only, and **sort by Most likely to come / Most repeated topics / Shuffle / Original order**. Tracks your score. |
+| `subjective-bank.html` | 46 Section-B questions by topic block, each with a full model answer or step-by-step numerical. Filter by source (Internal 2026 / Feb 2025 / July 2025 / numericals / derivations). |
+| `model-exam.html` | Randomized paper generator in the real KU format: the 75-mark end-semester paper (20 MCQs + 4 Section-B questions) or the 10-mark internal. Generate once, then **Reveal answers** toggles visibility without reshuffling the paper. Print / PDF supported. |
+| `assets/style.css` | Shared design system (colours, layout, equation styling) used by every page. |
+| `assets/data.js` | All question-bank content: 101 objective questions, 46 subjective parts, paper-assembly metadata. |
+| `assets/app.js` | Shared engine: MCQ interaction, subjective accordion, model-exam assembly, the figure resolver (`window.figInner`). |
+| `assets/guide.js` | Sidebar/table-of-contents behaviour for `study-guide.html`. |
+| `assets/slidefigs.js` | Curated figures extracted directly from your own slide photos/notes (23 keyed figures). |
+| `assets/img/` | Additional figures cropped straight from the MEPP 436 slide decks and reference books — stress/failure diagrams, Mohr's circle (2-D and 3-D), the five failure-theory yield surfaces individually and combined, crack-tip and fracture-mechanics figures, fatigue curves, reliability charts, DFMA/ergonomics diagrams. A few "draw-it-yourself" sketches remain only where no slide figure exists. |
 
-**Everything is controlled from one file: `data/portfolio.json`**
+## Sources used
 
-Open it in any text editor (Notepad, VS Code, etc.) and update the values. No coding knowledge needed.
+- MEPP 436 slide decks and lecture notes (the examinable core)
+- Past papers: Feb 2025, July 2025, and the 25 May 2026 First Internal
+- Reference texts: Norton; Shigley & Mitchell; Juvinall & Marshek; Shukla (*Practical Fracture Mechanics in Design*); Ulrich & Eppinger
 
----
+## Where the 25 May 2026 internal comes from
 
-### Your Profile
+The most recent internal is fracture- and fatigue-heavy. Verified against the reference PDFs:
 
-```json
-"profile": {
-  "name": "Your Name",
-  "tagline": "Video Editor · Audio Engineer · Podcast Producer",
-  "location": "Kathmandu, Nepal",
-  "bio": "Your bio here...",
-  "email": "your@email.com",
-  "instagram": "https://instagram.com/yourhandle",
-  "youtube": "https://youtube.com/yourchannel"
-}
-```
+- **Q1** — Plane stress vs plane strain, stress-analysis fundamentals.
+- **Q2** — "Fracture stress of a similar sheet" (maraging steel, 40→100 mm crack). Source: **Juvinall & Marshek**, Ch. 6 (the "similar sheet" wording is Juvinall's Problem 6.1); the maraging-steel data matches **Shukla**'s fracture problems. Method: \( \sigma_{f1}\sqrt{a_1} = \sigma_{f2}\sqrt{a_2} \Rightarrow 303.6\text{ MPa} \).
+- **Q3** — S-N relation with factors \(C_L, C_G, C_S, C_O\); \(0.9\,S_u\) at \(10^3\), \(0.5\,S_u\) at \(10^6\). Source: **Juvinall & Marshek**, Ch. 8 (Fatigue) — the symbol table defines \(C_L\) = load factor, \(C_G\) = gradient/size factor, \(C_S\) = surface factor.
+- **Q4** — Paris-law crack-propagation life (same numbers as Feb 2025 Q3c). Source: **Shukla**, Ch. 5 (fatigue crack growth, \(da/dN\), Miner \(\sum n/N=1\)).
 
----
+Primary source book: **Juvinall & Marshek — Fundamentals of Machine Component Design**, with fracture numericals shared by **Shukla**. These problem types are prioritised (tagged "Internal 2026", starred ★) across the study guide, subjective bank and model exam.
 
-### Adding a Video Project
+## Suggested study path
 
-Add an object to the `"video"` array inside `"work"`:
-
-```json
-{
-  "id": "v3",
-  "title": "My New Project",
-  "client": "Client Name",
-  "description": "Short description of the work.",
-  "thumbnail": "assets/thumbnails/v3.jpg",
-  "type": "youtube",
-  "url": "https://youtube.com/watch?v=YOUR_VIDEO_ID",
-  "tags": ["Interview", "Corporate"]
-}
-```
-
-**For `type`:** use `"youtube"` for YouTube links. The site auto-extracts the video ID and embeds it.
-
-**Thumbnails:** Put a JPG image in `assets/thumbnails/` and reference it. If you skip the thumbnail field, a placeholder icon shows instead.
+1. Skim the **exam blueprint** on `index.html` to see where marks concentrate.
+2. Work through `study-guide.html` (or the Interactive Study Notes) topic by topic.
+3. Drill `objective-bank.html`, sorted by **Most likely to come**, and `subjective-bank.html` filtered to past-paper sources.
+4. The night before: run through `last-minute-guide.html` self-quiz style, then generate a full paper in `model-exam.html` under time.
 
 ---
-
-### Adding an Audio Sample
-
-Add to the `"audio"` array:
-
-```json
-{
-  "id": "a3",
-  "title": "Mix Title",
-  "client": "Client Name",
-  "description": "What was done — EQ, compression, mastering etc.",
-  "type": "audio",
-  "url": "assets/audio/mysample.mp3",
-  "duration": "4:22",
-  "tags": ["Dialogue", "Mastering"]
-}
-```
-
-**Audio files:** Put MP3 files in `assets/audio/`. Keep file sizes reasonable for web — 128kbps MP3 is fine for portfolio samples.
-
----
-
-### Adding a Podcast Episode
-
-Add to the `"podcast"` array. Two options:
-
-**Option A — Spotify/Anchor embed:**
-```json
-{
-  "id": "p3",
-  "title": "Episode Title",
-  "client": "Show Name",
-  "description": "Episode description.",
-  "type": "embed",
-  "url": "https://open.spotify.com/embed/episode/YOUR_EPISODE_ID",
-  "tags": ["Healthcare", "Interview"]
-}
-```
-
-To get the Spotify embed URL: open the episode in Spotify → click ··· → Share → Embed → copy the `src` URL from the iframe code.
-
-**Option B — Direct MP3:**
-```json
-{
-  "id": "p3",
-  "title": "Episode Title",
-  "client": "Show Name",
-  "description": "Episode description.",
-  "type": "audio",
-  "url": "assets/audio/episode-clip.mp3",
-  "duration": "12:30",
-  "tags": ["Podcast"]
-}
-```
-
----
-
-### Updating Gear & Software Lists
-
-Simple arrays — just add or remove items:
-
-```json
-"gear": [
-  "Sony a6700",
-  "Sigma 16mm f/1.4",
-  "Your new lens here"
-],
-"software": [
-  "DaVinci Resolve",
-  "iZotope RX"
-]
-```
-
----
-
-## 📬 Setting Up the Contact Form
-
-The form uses **Formspree** (free tier: 50 submissions/month) — no backend needed.
-
-1. Go to [formspree.io](https://formspree.io) and create a free account
-2. Create a new form — it gives you a form ID like `xpzvwkqr`
-3. In `js/main.js`, find this line:
-   ```js
-   form.action = `https://formspree.io/f/YOUR_FORM_ID`;
-   ```
-4. Replace `YOUR_FORM_ID` with your actual ID
-5. Also update in `index.html`:
-   ```html
-   action="https://formspree.io/f/YOUR_FORM_ID"
-   ```
-
-You'll receive contact form submissions directly to your email.
-
----
-
-## 📁 File Structure
-
-```
-portfolio/
-├── index.html              ← Main page (rarely needs editing)
-├── css/
-│   └── style.css           ← All styles
-├── js/
-│   └── main.js             ← All functionality
-├── data/
-│   └── portfolio.json      ← YOUR CONTENT — edit this file
-├── assets/
-│   ├── thumbnails/         ← Put video thumbnail JPGs here
-│   │   └── v1.jpg
-│   └── audio/              ← Put MP3 sample files here
-│       └── sample1.mp3
-├── _config.yml             ← GitHub Pages config
-└── README.md               ← This file
-```
-
----
-
-## 💡 Tips
-
-- **Keep audio samples short** — 2–5 minute clips are ideal for portfolio. Full episodes make the site slow to load.
-- **Compress thumbnails** — Use [squoosh.app](https://squoosh.app) to compress JPGs before uploading. Aim for under 150KB per thumbnail.
-- **Use a custom domain** — In GitHub Pages settings, you can add a custom domain (e.g. `yourname.com`) for free.
-- **Update frequently** — GitHub Pages redeploys automatically within ~30 seconds of pushing changes to the repo.
-
----
-
-## 🎨 Customising the Design
-
-All colours are CSS variables at the top of `css/style.css`:
-
-```css
-:root {
-  --accent: #d4a853;    /* Gold — change to any colour */
-  --bg:     #0a0a08;    /* Main background */
-  --text:   #e8e4dc;    /* Main text */
-}
-```
-
-Change `--accent` to match your personal brand colour.
+Prepared for Sukalpa. Good luck in the exam.
