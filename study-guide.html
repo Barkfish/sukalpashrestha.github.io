@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Guide · MEPP 436</title>
+<link rel="stylesheet" href="assets/style.css">
+<!-- MathJax: proper equation typesetting (needs internet on first open; caches after). -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<header class="topbar"><div class="inner">
+  <span class="brand"><span class="code">MEPP 436</span> Advanced Machine Design</span>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="study-guide.html" class="active">Study Guide</a>
+    <a href="objective-bank.html">Objective Bank</a>
+    <a href="subjective-bank.html">Subjective Bank</a>
+    <a href="last-minute-guide.html">Last-Minute</a>
+    <a href="model-exam.html">Model Exam</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="kicker">Complete Exam Study Guide · Parts I–III</div>
+    <h1>Advanced Machine Design — Study Guide</h1>
+    <p>Drawn directly from your MEPP&nbsp;436 slide decks and lecture notes, then elaborated with the reference texts where the slides are thin. Core (examinable) content is plain; <span style="color:#ffd9b3">reference/beyond-slides enrichment</span> is always in a coloured box so you can tell them apart.</p>
+  </section>
+
+  <div class="box beyond"><span class="lbl">★ Most-recent paper (25 May 2026 internal)</span>
+    The newest paper leans on <b>Juvinall &amp; Marshek</b> (fracture “similar sheet” scaling; fatigue S-N with modifying factors) and <b>Shukla</b> (Paris-law crack growth). Those exact methods are elaborated in §5, §7 below and worked in the <a href="subjective-bank.html">Subjective Bank</a>.
+  </div>
+
+  <div class="sg-toolbar">
+    <input type="text" id="sgSearch" placeholder="🔎 Search topics (e.g. Paris, Weibull, Mohr, DFMA)…">
+    <button class="btn sm ghost" id="sgExpand">Expand all</button>
+    <button class="btn sm ghost" id="sgCollapse">Collapse all</button>
+    <button class="btn sm ghost" id="sgDark">🌙 Dark</button>
+  </div>
+  <p class="small" style="margin:2px 0 10px">Click a topic heading to expand or collapse it. Use the sidebar to jump between topics; each figure is taken from your course slides.</p>
+
+  <div class="sg-layout">
+    <aside class="sg-side" id="sgSide"></aside>
+    <div class="sg-main" id="sgMain">
+
+<!-- ================= PART I ================= -->
+<h2 class="sec" id="p1"><span class="num">1</span> Introduction to Mechanical Engineering Design</h2>
+<div class="box def"><span class="lbl">Definition</span><b>Design</b> = applying <i>creativity</i> to plan the <i>optimum solution</i> of a given problem and <i>communicate</i> it to others. Keyword chain: <b>given problem → creativity → planning → optimum solution → communication.</b> Engineering design narrows this to engineering problems; mechanical engineering design to mechanical elements.</div>
+
+<h3 class="sub">1.1 The design process &amp; considerations</h3>
+<p>Design proceeds through recognised stages, iterating as needed:</p>
+<p style="text-align:center"><code class="k">identification of need → problem definition → synthesis → analysis &amp; optimisation → evaluation → presentation</code></p>
+<p>Typical <b>design considerations</b> juggled by the engineer: functionality, strength/stress, distortion/deflection, wear, corrosion, safety, reliability, manufacturability, cost, weight, life, noise, styling and environmental impact.</p>
+
+<h3 class="sub">1.2 Standards and codes</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Term</th><th>Definition</th><th>Purpose</th></tr>
+  <tr><td><b>Standard</b></td><td>Specifications for parts, materials or processes</td><td>Uniformity, efficiency, a specified quality</td></tr>
+  <tr><td><b>Code</b></td><td>Specifications for analysis, design, manufacture &amp; construction</td><td>A specified degree of safety, efficiency &amp; performance</td></tr>
+</table></div>
+<p class="small">Bodies to know: NBSM (Nepal), NBC 105:2020, BIS, AISI, ASME, ASTM, ASHRAE, SAE.</p>
+
+<h3 class="sub">1.3 Design economics</h3>
+<ul class="tight">
+  <li><b>Using standard sizes</b> is the first principle of cost reduction (cuts tooling &amp; procurement cost).</li>
+  <li><b>Close (tight) tolerances raise cost</b> — extra processing, extra inspection, slower machines.</li>
+  <li><b>Break-even analysis</b> compares two production methods; below the break-even quantity the low-setup method wins, above it the high-rate method wins.</li>
+</ul>
+
+<h3 class="sub">1.4 Design factor &amp; factor of safety <span class="chip jul">common MCQ</span></h3>
+<div class="eqm">\[ n_d=\frac{\text{loss-of-function parameter}}{\text{max-allowable parameter}}\quad\Longrightarrow\quad n=\frac{\text{Strength}}{\text{Stress}}=\frac{S}{\sigma} \]</div>
+<ul class="tight"><li>Stress &amp; strength must be the <b>same type, same units, same critical location</b>.</li>
+<li>The <b>design factor n_d</b> is chosen up-front for uncertainty; the <b>factor of safety</b> is the <i>realised</i> margin after rounding to standard sizes.</li></ul>
+<div class="box tip"><span class="lbl">Exam tip (Feb 2025 · Q1)</span>The purpose of a factor of safety is “to compensate for uncertainties in material properties and loading conditions” — not weight, cost or aesthetics.</div>
+
+<h3 class="sub">1.5 Reliability (introductory)</h3>
+<div class="eqm">\[ R=1-p_f,\qquad p_f=\frac{\text{number of failures}}{\text{total instances}},\qquad 0\le R\le 1 \]</div>
+<p><b>Series system</b> (all must work): R = R₁·R₂·…·Rₙ. Example: two bearings 0.95 &amp; 0.98 → R = 0.931. (Full treatment in §9.)</p>
+
+<h3 class="sub">1.6 Dimensions &amp; tolerances</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Term</th><th>Meaning</th></tr>
+  <tr><td>Nominal size</td><td>The size used when referring to a part (need not equal the actual dimension)</td></tr>
+  <tr><td>Limits</td><td>The stated max &amp; min dimensions</td></tr>
+  <tr><td>Tolerance</td><td>The difference between the two limits</td></tr>
+  <tr><td>Bilateral / Unilateral</td><td>Variation in both directions / in one direction only</td></tr>
+  <tr><td>Clearance / Interference</td><td>Internal member smaller / larger than external member</td></tr>
+  <tr><td>Allowance</td><td>Minimum clearance (or maximum interference) of mating parts</td></tr>
+</table></div>
+<div class="box beyond"><span class="lbl">Beyond the slides — why “design determines cost”</span>Roughly <b>70–80% of a product's total lifecycle cost is locked in at the design stage</b> — the same idea that drives DFMA (§8). Standard sizes, tolerances and design factors are really early lessons in cost- and risk-management, not just geometry.</div>
+
+<!-- ================= PART I — MATERIALS ================= -->
+<h2 class="sec" id="p2"><span class="num">2</span> Material Properties &amp; Selection</h2>
+<p>Choosing the material is one of the earliest and most important design decisions — usually made <i>before</i> dimensions are fixed. Properties come from <b>specimen testing</b> (standardised, e.g. ASTM) or, when risk is high, <b>component testing</b> under real service loads.</p>
+
+<h3 class="sub">2.1 The tensile test (ASTM E8) &amp; key properties</h3>
+<p>A load–elongation curve becomes a stress–strain curve, giving: elastic limit / yield strength, elastic modulus E (Hooke's law), ultimate tensile strength (UTS), ductility (% elongation, % area reduction), tensile toughness, Poisson's ratio ν.</p>
+<div class="box def"><span class="lbl">Engineering vs true stress/strain</span>Engineering values use the <i>original</i> gauge dimensions. In the plastic region area &amp; length change, so <b>true stress</b> = load ÷ <i>instantaneous</i> area and <b>true strain</b> εₜ = ln(l/l₀) describe plastic behaviour accurately.</div>
+<div data-fig="mat_ss" data-cap="Engineering stress–strain curve (0.2% offset yield, UTS, breaking strength) with the specimen through uniform elastic → plastic → necking → fracture. From your study notes."></div>
+
+<h3 class="sub">2.2 Other mechanical tests</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Test</th><th>Measures</th><th>Key fact</th></tr>
+  <tr><td>Compression</td><td>Behaviour under compressive load</td><td>Needed for ceramics, concrete</td></tr>
+  <tr><td>Shear</td><td>Shear stress–strain</td><td>Shear yield ≈ 0.5–0.75 × tensile yield; G ≈ 0.4E</td></tr>
+  <tr><td>Hardness (Brinell/Rockwell/Vickers)</td><td>Resistance to surface penetration</td><td>Not fundamental; for steels UTS(MPa) ≈ 3.4 × HB</td></tr>
+  <tr><td>Impact (Izod/Charpy)</td><td>Energy absorbed on sudden load</td><td>Materials get more brittle at high strain rate</td></tr>
+  <tr><td>Creep</td><td>Time-dependent deformation at high T</td><td>Governs high-temperature design</td></tr>
+  <tr><td>Fatigue</td><td>Strength loss under repeated stress</td><td>See §6–§7</td></tr>
+</table></div>
+<div class="box tip"><span class="lbl">Exam tip (Feb 2025 · Q5)</span>For high-temperature service the most important property is <b>creep resistance</b>.</div>
+
+<h3 class="sub">2.3 Heat treatment (effect on properties)</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Process</th><th>Effect</th></tr>
+  <tr><td>Quenching</td><td>Very hard/strong martensite; trades ductility for strength</td></tr>
+  <tr><td>Tempering</td><td>After quench: lowers strength a little, restores some ductility</td></tr>
+  <tr><td>Annealing</td><td>Soft, relaxed state; removes residual stresses</td></tr>
+  <tr><td>Normalizing</td><td>Stronger/harder than fully annealed but close to it</td></tr>
+</table></div>
+
+<h3 class="sub">2.4 Material classes</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Class</th><th>Strengths</th><th>Weaknesses</th></tr>
+  <tr><td>Metals &amp; alloys</td><td>High strength/stiffness, ductile, tough, good fatigue &amp; wear, conductive</td><td>Heavy, can corrode</td></tr>
+  <tr><td>Polymers</td><td>Low density → good specific strength, corrosion-resistant, insulating, easily formed</td><td>Low strength, poor at high T</td></tr>
+  <tr><td>Ceramics</td><td>Excellent compressive strength, high E, hard, wear/corrosion-resistant, high-T stable</td><td>Very brittle; tension ≈ 10% of compression; no plasticity</td></tr>
+  <tr><td>Composites</td><td>High specific strength/modulus, good fatigue/creep, tailorable</td><td>Cost, anisotropy, harder to recycle</td></tr>
+</table></div>
+<div data-fig="ceramic" data-cap="Ceramic: linear-elastic straight line ending in sudden brittle fracture (Feb 2025 Q1b)."></div>
+<div class="box tip"><span class="lbl">Exam tip (Feb 2025 · Q4)</span>Main advantage of composites = “high strength-to-weight ratio and tailored properties.”</div>
+
+<h3 class="sub">2.5 Material selection charts (Ashby charts)</h3>
+<p>An Ashby chart plots one property against another (e.g. Young's modulus vs density). Each material class occupies a “bubble.” Overlay a <b>guideline of constant performance</b> (specific stiffness E/ρ = C, or specific strength σ/ρ = C); materials in the top-left/upper region win for light-and-stiff or light-and-strong designs.</p>
+<ul class="tight"><li>Metals heaviest; foams lightest; ceramics stiffest.</li>
+<li>Light-and-stiff bike frame: polymers too floppy, ceramics too brittle in tension → composites best; Mg/Al/Ti competitive.</li></ul>
+<div data-fig="ashby" data-cap="Material-selection chart (strength vs cost) — each class is a bubble; from the course slides."></div>
+<div data-fig="mat_classes" data-cap="The main classes of engineering material (metals, polymers, ceramics, composites) and their property niches. From your study notes."></div>
+<div class="box ref"><span class="lbl">From the reference books — the material index (Norton / Ashby)</span>Behind the guideline is a <b>material index</b>: maximise <b>E<sup>1/2</sup>/ρ</b> for a light-stiff beam, <b>σ<sub>f</sub><sup>2/3</sup>/ρ</b> for a light-strong beam. A line of slope 2 (or 3/2) on the log–log chart is a line of constant index; sliding it up-left finds the winning material. Knowing the index exists lets you <i>explain</i> why the chart guideline has a particular slope.</div>
+
+<!-- ================= PART I — STRESS ================= -->
+<h2 class="sec" id="p3"><span class="num">3</span> Stresses, Strains &amp; Failure Theories</h2>
+<h3 class="sub">3.1 Stress &amp; strain as tensors</h3>
+<p><b>Stress</b> = internal resistance per unit area developed against external load; <b>strain</b> = the resulting deformation. At a point, three mutually perpendicular planes fully describe the stress state — the “stress cube.”</p>
+<div class="eqm">\[ \sigma_{ij}=\begin{bmatrix}\sigma_{xx}&\tau_{xy}&\tau_{xz}\\ \tau_{yx}&\sigma_{yy}&\tau_{yz}\\ \tau_{zx}&\tau_{zy}&\sigma_{zz}\end{bmatrix}\qquad\text{symmetric 2nd-order tensor — 9 components, 6 independent} \]</div>
+<div data-fig="stresscube" data-cap="The stress element: 3 normal + 3 independent shear components."></div>
+<ul class="tight"><li><b>Plane stress:</b> all z-face stresses = 0 (thin plates, pressure-vessel walls, free surfaces). Components σₓₓ, σᵧᵧ, τₓᵧ.</li>
+<li><b>Plane strain:</b> all z-direction strains = 0 (thick bodies: dams, long shafts).</li></ul>
+<div data-fig="str_planes" data-cap="Plane stress vs plane strain elements. From your study notes."></div>
+
+<h3 class="sub">3.2 Generalized Hooke's law (isotropic, linear elastic)</h3>
+<div class="eqm">\[ \varepsilon_x=\frac1E\big[\sigma_x-\nu(\sigma_y+\sigma_z)\big]\ (\text{+ cyclic}),\qquad \gamma_{xy}=\frac{\tau_{xy}}{G} \]
+\[ \text{Lamé: }\sigma_{ij}=\lambda\,\varepsilon_{kk}\delta_{ij}+2\mu\,\varepsilon_{ij}\ (\mu=G),\qquad \text{anisotropic: }\sigma_{ij}=C_{ijkl}\,\varepsilon_{kl} \]</div>
+
+<h3 class="sub">3.3 Principal stresses, transformation &amp; Mohr's circle</h3>
+<p><b>Principal planes</b> carry no shear, only normal stress; those are the principal stresses σ₁ ≥ σ₂ ≥ σ₃.</p>
+<div class="eqm">\[ \sigma_{1,2}=\frac{\sigma_x+\sigma_y}{2}\pm\sqrt{\left(\frac{\sigma_x-\sigma_y}{2}\right)^2+\tau_{xy}^2} \]
+\[ \tau_{\max}=\sqrt{\left(\frac{\sigma_x-\sigma_y}{2}\right)^2+\tau_{xy}^2}=\frac{\sigma_1-\sigma_3}{2},\qquad \tan2\theta_p=\frac{2\tau_{xy}}{\sigma_x-\sigma_y} \]</div>
+<div data-fig="mohr" data-cap="Mohr's circle: centre σavg, radius τmax; element angles double on the circle."></div>
+<figure><img src="assets/img/mohr_3d.png" alt="Three Mohr's circles for a 3-D stress state" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>The three Mohr's circles of a 3-D stress state (course slide): the largest circle, spanning \(\sigma_1\) to \(\sigma_3\), gives the absolute maximum shear \(\tau_{\max}=(\sigma_1-\sigma_3)/2\).</figcaption></figure>
+
+<h3 class="sub">3.4 Bending &amp; torsion (revision)</h3>
+<div class="eqm">\[ \text{Flexure: }\frac{M}{I}=\frac{\sigma_b}{y}=\frac{E}{\rho}\qquad \text{Torsion: }\frac{T}{J}=\frac{\tau}{\rho}=\frac{G\phi}{L}\qquad J=\frac{\pi}{32}(D^4-d^4) \]</div>
+<figure><img src="assets/img/bending_dist.png" alt="Linear bending stress distribution about the neutral surface" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>Bending stress varies linearly across the section (course slide): zero at the neutral surface, maximum \(\sigma_m\) at the outer fibre \(y=c\).</figcaption></figure>
+<div class="box example"><span class="lbl">Worked example — hollow shaft torsion (July 2025 · Q2)</span>D = 100, d = 60 mm, L = 1 m, τ = 35 MPa, G = 85 GPa. With ρ = R = 50 mm: φ = τL/(ρG) = (35×1000)/(50×85000) = <b>0.0082 rad ≈ 0.47°</b> per metre.</div>
+<div class="box example"><span class="lbl">Worked example — hollow shaft stress (Feb 2025 · Q3)</span>dᵢ = 15, dₒ = 30 mm, T = 100 N·m. J = (π/32)(30⁴−15⁴) = 74 490 mm⁴; τ = T·rₒ/J = 100000·15/74490 ≈ <b>20.12 MPa</b>.</div>
+
+<h3 class="sub">3.5 Failure — the five classical theories</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Theory (a.k.a.)</th><th>Failure criterion</th><th>Best for</th><th>Yield surface</th></tr>
+  <tr><td>Max principal stress (Rankine)</td><td>σ₁ ≥ σult (or σᵧ)</td><td>Brittle</td><td>Square</td></tr>
+  <tr><td>Max shear stress (Tresca)</td><td>σ₁ − σ₃ ≥ σᵧ</td><td>Ductile (conservative)</td><td>Hexagon</td></tr>
+  <tr><td>Max principal strain (St. Venant)</td><td>ε₁ ≥ εᵧ</td><td>Rarely used</td><td>Rhombus</td></tr>
+  <tr><td>Max total strain energy (Haigh)</td><td>U ≥ U at yield</td><td>—</td><td>Ellipse</td></tr>
+  <tr><td>Max distortion energy (Von Mises)</td><td>\(\sigma'=\sqrt{\tfrac12[(\sigma_1-\sigma_2)^2+(\sigma_2-\sigma_3)^2+(\sigma_3-\sigma_1)^2]}\ge\sigma_y\)</td><td>Ductile (accurate)</td><td>Ellipse</td></tr>
+</table></div>
+<div class="eqm">\[ \text{von Mises (biaxial, }\sigma_3=0\text{): }\ \sigma'=\sqrt{\sigma_1^2-\sigma_1\sigma_2+\sigma_2^2}\ge\sigma_y \]</div>
+<div data-fig="yield" data-cap="Hexagonal Tresca (max-shear) yield surface in principal-stress space — from the course slides. The Von Mises criterion is the ellipse that circumscribes this hexagon."></div>
+<figure><img src="assets/img/ft_compare.png" alt="All five failure theories compared in principal-stress space with experimental yield data" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>All five theories overlaid in \(\sigma_1/\sigma_{yp}\)–\(\sigma_2/\sigma_{yp}\) space (course slide): Rankine (square), St.&nbsp;Venant &amp; Haigh, Tresca (hexagon) inside von Mises (ellipse) — with experimental yield points for cast iron, steel, copper and aluminium. Ductile metals hug the von Mises ellipse; brittle cast iron follows Rankine.</figcaption></figure>
+<p class="small" style="margin-top:14px"><b>The five yield surfaces individually</b> (course slides, all in \(\sigma_1/\sigma_{yp}\)–\(\sigma_2/\sigma_{yp}\) space — a point inside is safe, on the boundary it yields):</p>
+<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:12px 0">
+  <figure style="flex:1 1 150px;max-width:215px;margin:0"><img src="assets/img/ft_rankine.png" alt="Rankine square yield surface" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption><b>Rankine</b> — square<br>max principal stress · brittle</figcaption></figure>
+  <figure style="flex:1 1 150px;max-width:215px;margin:0"><img src="assets/img/ft_tresca.png" alt="Tresca hexagon yield surface" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption><b>Tresca</b> — hexagon<br>max shear · ductile (conservative)</figcaption></figure>
+  <figure style="flex:1 1 150px;max-width:215px;margin:0"><img src="assets/img/ft_stvenant.png" alt="St Venant rhombus yield surface" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption><b>St.&nbsp;Venant</b> — rhombus<br>max principal strain (\(\nu=0.35\))</figcaption></figure>
+  <figure style="flex:1 1 150px;max-width:215px;margin:0"><img src="assets/img/ft_haigh.png" alt="Haigh total-strain-energy ellipse" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption><b>Haigh</b> — ellipse<br>max total strain energy (\(\nu=0.35\))</figcaption></figure>
+  <figure style="flex:1 1 150px;max-width:215px;margin:0"><img src="assets/img/ft_vonmises.png" alt="von Mises distortion-energy ellipse" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption><b>von Mises</b> — ellipse<br>max distortion energy · ductile (accurate)</figcaption></figure>
+</div>
+<div class="box tip"><span class="lbl">Exam tip (Feb 2025 · Q2)</span>For ductile shafts the “commonly used” criterion is <b>Maximum Shear Stress (Tresca)</b> — the safe, simple choice. Von Mises is more accurate/less conservative. Know both yield-surface shapes.</div>
+<div class="box beyond"><span class="lbl">Beyond the slides — why Von Mises works</span>Total strain energy splits into <i>volumetric</i> (size change) + <i>distortional</i> (shape change). Hydrostatic pressure alone doesn't yield metals, so only the <b>distortion energy</b> should count — the physical reason Von Mises predicts ductile yielding better than Tresca. This one-line “why” lifts a 3-mark answer to 4.</div>
+
+<!-- ================= PART II — FRACTURE ================= -->
+<h2 class="sec" id="p4"><span class="num">4</span> Introduction to Fracture Mechanics</h2>
+<div class="box def"><span class="lbl">Definition</span><b>Fracture mechanics</b> studies the <b>propagation of cracks</b>. A crack is a sharp void that acts as a <b>stress amplifier</b> — cracks don't create stress, they intensify the far-field stress. The sharper the tip, the higher the local stress.</div>
+
+<h3 class="sub">4.1 Why fracture mechanics? (the design shift)</h3>
+<p>Traditional design compares <b>stress to strength</b> (2 parameters). Fracture mechanics adds a third: <b>flaw size</b>. The design is safe if the combination of stress and largest expected crack keeps K &lt; Kᴵᴄ. It answers: <i>what is the strength as a function of crack size,</i> and <i>what is the maximum tolerable crack size?</i></p>
+<div data-fig="frac_appraisal" data-cap="Traditional safety appraisal (n = Sᵧ/σ) vs the fracture-mechanics appraisal (n = Kᴵᴄ/Kᵢ) — the design shift that adds flaw size as a third parameter. From your study notes."></div>
+<p class="small">Historical driver: the WWII Liberty Ships broke in cold water — welded (continuous) construction, brittle high-sulphur steel and micro-cracks let a crack run through the whole hull.</p>
+
+<h3 class="sub">4.2 Characteristics of a crack</h3>
+<ul class="tight">
+  <li><b>Connection to free surface</b> — fully internal / internal-connected-to-surface / surface crack.</li>
+  <li><b>Crack length</b> — longer is more dangerous.</li>
+  <li><b>Crack-tip radius</b> — sharper is more dangerous; plasticity blunts tips in ductile metals.</li>
+  <li><b>Crack orientation</b> relative to loading.</li>
+</ul>
+<div class="box tip"><span class="lbl">Exam tip (Feb 2025 · Q7)</span>“Crack surface roughness” is <b>NOT</b> a defining characteristic (the four are length, tip radius, orientation, surface connection).</div>
+
+<h3 class="sub">4.3 Modes of loading (memorise cold)</h3>
+<div data-fig="modes" data-cap="Mode I Opening (most common, dominates fatigue) · Mode II Sliding · Mode III Tearing."></div>
+<div class="box warn"><span class="lbl">Common mistake (Feb 2025 · Q6)</span>“Rolling mode” is NOT real. The only three are Opening (I), Sliding (II), Tearing (III). Real cracks are often mixed-mode.</div>
+
+<h3 class="sub">4.4 Cohesive stress &amp; why real strength is low</h3>
+<p><b>Cohesive stress σᴄ</b> = theoretical stress to break atomic bonds, from the interatomic force–displacement curve (≈ half a sine wave):</p>
+<div class="eqm">\[ \sigma_c=\sqrt{\frac{E\,\gamma_s}{x_0}}\qquad(\gamma_s=\text{surface energy},\ x_0=\text{atomic spacing}) \]</div>
+<p>Real materials fracture far below σᴄ because flaws concentrate stress. For an elliptical crack (tip radius ρ = b²/a):</p>
+<div class="eqm">\[ \sigma_{tip}\approx\sigma\!\left(1+\frac{2a}{b}\right)\approx2\sigma\sqrt{\frac{a}{\rho}}\ (\text{sharp flaw})\quad\Longrightarrow\quad \sigma_f\approx\sqrt{\frac{E\,\gamma_s}{4a\,x_0}} \]</div>
+<p>A micron crack gives σ_f ≈ 0.01 σᴄ — matching experiment; a “perfect” solid always contains flaws.</p>
+<div data-fig="frac_cohesive" data-cap="Interatomic force vs separation — the basis of the theoretical cohesive stress. From your study notes."></div>
+
+<!-- ================= PART II — LEFM ================= -->
+<h2 class="sec" id="p5"><span class="num">5</span> Linear Elastic Fracture Mechanics (LEFM)</h2>
+<p>LEFM applies to <b>brittle behaviour</b> — sharp cracks, little tip plasticity. For growth, <b>both</b> criteria hold: the global energy criterion (Griffith) <i>and</i> the local stress criterion (Inglis).</p>
+<div data-fig="griffith" data-cap="Elliptical crack (semi-axes a, b; tip radius ρ = b²/a) under remote stress σ — the Inglis stress-concentration model (course slides)."></div>
+
+<h3 class="sub">5.1 Inglis (1913) — local, stress-based</h3>
+<p>Stress concentration at a notch depends on the tip radius. The crack grows when the amplified tip stress reaches the theoretical fracture stress: σmax = σ_A ≥ σ_f.</p>
+<figure><img src="assets/img/inglis_ellipse.png" alt="Inglis elliptical crack showing tip stress concentration" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>Inglis model (course slide): an elliptical hole (semi-axes \(a,b\)) in a plate under remote \(\sigma_\infty\) raises the tip stress to \(\sigma_\infty(1+2a/b)\) — sharper cracks (small \(b\)) concentrate stress more.</figcaption></figure>
+
+<h3 class="sub">5.2 Griffith (1920) — global, energy-based</h3>
+<div class="eqm">\[ \frac{dU_s}{da}\ge\frac{dU_\gamma}{da},\quad U_s=\frac{\pi a^2\sigma^2}{E}\ (\text{per unit thickness}),\ U_\gamma=4\gamma_s a \]
+\[ \sigma_f=\sqrt{\frac{2E\gamma_s}{\pi a}}\ (\text{plane stress}),\qquad \sigma_f=\sqrt{\frac{2E\gamma_s}{\pi a(1-\nu^2)}}\ (\text{plane strain}) \]</div>
+<div class="box beyond"><span class="lbl">Modified Griffith (Irwin–Orowan) — crucial for metals</span>Pure Griffith works only for truly brittle solids (glass, ceramics). In metals, huge energy is dissipated by <b>plastic deformation at the tip</b>; Irwin &amp; Orowan replaced γₛ by an effective fracture energy w_f = γₛ + γₚ, with γₚ ≫ γₛ. This is why tough steel absorbs thousands of times more energy than its bond energy alone.</div>
+
+<h3 class="sub">5.3 Stress Intensity Factor K — the central quantity</h3>
+<div class="eqm">\[ \sigma_{ij}=\frac{K}{\sqrt{2\pi r}}\,f_{ij}(\theta)\quad\Longrightarrow\quad K_I=Y\,\sigma\sqrt{\pi a}\qquad(\text{units MPa}\cdot\sqrt{\text{m}}) \]</div>
+<figure><img src="assets/img/cracktip_field.png" alt="Crack-tip stress field concentration" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>Crack-tip stress field (course slide / FEA): the \(1/\sqrt{r}\) singularity concentrates stress at the tip; its strength is measured by the single parameter \(K\).</figcaption></figure>
+<ul class="tight"><li>a = half-length for a fully internal (central) crack; full length for an edge crack.</li>
+<li>Y = geometry/shape factor. Insight: <i>quadrupling crack length ≡ doubling stress</i> — K captures the combined effect.</li></ul>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Geometry</th><th>Shape factor Y</th></tr>
+  <tr><td>Central crack, infinite plate</td><td>1.0</td></tr>
+  <tr><td>Single edge crack</td><td>1.12 (12% higher — extra energy at free surface)</td></tr>
+  <tr><td>Embedded penny-shaped crack</td><td>2/π ≈ 0.64</td></tr>
+  <tr><td>Surface half-penny crack</td><td>0.713</td></tr>
+</table></div>
+
+<h3 class="sub">5.4 Irwin's fracture criterion &amp; fracture toughness Kᴵᴄ</h3>
+<p>Fracture occurs in Mode I when <b>Kᵢ ≥ Kᴵᴄ</b>. Kᴵᴄ = fracture toughness (a material property like σᵧ), microstructure-sensitive, measured under <b>plane strain</b> (thick specimen → conservative, lowest value).</p>
+<figure><img src="assets/img/ct_specimen.png" alt="Compact-tension specimen for fracture toughness testing" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>Compact-tension (CT) specimen used to measure \(K_{IC}\) (course slide, ASTM&nbsp;E399): a machined notch plus a sharp fatigue pre-crack is pulled open through the loading-pin holes while a clip gauge records crack-mouth opening. Thickness \(W=2t\) ensures plane strain.</figcaption></figure>
+<div class="eqm">\[ \text{Critical crack length: }\ a_c=\frac{1}{\pi}\left(\frac{K_{IC}}{Y\sigma}\right)^2 \]</div>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Material</th><th>Kᴵᴄ (MPa√m)</th><th>Material</th><th>Kᴵᴄ (MPa√m)</th></tr>
+  <tr><td>Cast iron</td><td>33</td><td>Al 2024-T3</td><td>33</td></tr>
+  <tr><td>Low-carbon steel</td><td>77</td><td>Al 7075-T6</td><td>28</td></tr>
+  <tr><td>Stainless steel</td><td>220</td><td>Ti-6Al-4V</td><td>55</td></tr>
+</table></div>
+<div class="box example"><span class="lbl">Worked example — critical crack length (Feb 2025 · Q12)</span>Edge crack, Δσ = 0→260 MPa, Kᴵᴄ = 165 MPa√m, Y = 1.12. aᴄ = (1/π)(165/(1.12·260))² = (1/π)(0.5666)² = <b>0.1022 m ≈ 102.2 mm</b>.</div>
+<div class="box ref"><span class="lbl">From the reference books — Griffith scaling (Juvinall Ch. 6 · Shukla) ★ 2026 internal</span>Because Kᴵᴄ = Yσ_f√(πa) is constant for a given material, a <b>“similar sheet”</b> with a different crack obeys σ<sub>f1</sub>√a₁ = σ<sub>f2</sub>√a₂. E.g. maraging steel, central crack 40 mm at σ_f = 480 MPa → for a 100 mm crack, σ_f2 = 480·√(20/50) = <b>303.6 MPa</b>. This exact type appeared in the 25 May 2026 internal (Q2).</div>
+
+<h3 class="sub">5.5 Energy release rate G and the K–G relation</h3>
+<div class="eqm">\[ G=-\frac{d\Pi}{dA}\ (\text{crack driving force}),\qquad G=\frac{K_I^2}{E'}\ \big(E'=E\text{ plane stress},\ E/(1-\nu^2)\text{ plane strain}\big) \]
+\[ \text{Crack grows when }G\ge G_c;\qquad \text{compliance: }G=\frac{P^2}{2}\frac{dC}{da} \]</div>
+<p>K is <i>local</i>; G is <i>global</i>; for linear elasticity they are uniquely related.</p>
+
+<h3 class="sub">5.6 Crack-tip plasticity &amp; the LEFM limit</h3>
+<p>LEFM predicts infinite tip stress (the <b>stress singularity</b>); plasticity intervenes:</p>
+<ul class="tight"><li><b>Irwin model:</b> plastic-zone size r_y = (1/2π)(Kᵢ/σ_ys)² (plane stress); use effective crack length a + r_y.</li>
+<li><b>Strip-yield (Dugdale–Barenblatt):</b> a thin plastic strip length ρ at each tip; total crack = 2(a+ρ).</li></ul>
+<div class="grid cols-2">
+  <figure><img src="assets/img/plastic_zone.png" alt="Irwin crack-tip plastic zone" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>Irwin correction (course slide): real yielding blunts the tip and shifts the crack by \(r_y\), so an <b>effective</b> crack length \(a+r_y\) is used.</figcaption></figure>
+  <figure><img src="assets/img/pz_planes.png" alt="Plane-stress vs plane-strain plastic zone shapes" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>Plastic-zone shape (course slide): larger in <b>plane stress</b> (thin) and smaller in <b>plane strain</b> (thick) — why thick sections give the lowest, conservative \(K_{IC}\).</figcaption></figure>
+</div>
+<div class="box beyond"><span class="lbl">LEFM vs EPFM — one line that shows mastery</span>K and G belong to <b>Linear-Elastic FM</b> (brittle, small plastic zone). When the plastic zone is large (tough metals, thin sections) LEFM fails and you move to <b>Elastic-Plastic FM</b> using the <b>J-integral</b> (Rice, 1968) or <b>CTOD δ</b> (Wells, 1961). J reduces to G in the elastic limit — that's why it “generalises” the energy-release-rate concept.</p></div>
+
+<h3 class="sub">5.7 Summary of fracture criteria</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Criterion (year)</th><th>Basis</th><th>Condition</th><th>Key formula</th></tr>
+  <tr><td>Inglis (1913)</td><td>Local stress, tip radius</td><td>σ_A ≥ σ_f</td><td>σtip = 2σ√(a/ρ)</td></tr>
+  <tr><td>Griffith (1920)</td><td>Global energy</td><td>dUₛ/da ≥ dUᵧ/da</td><td>σ_f = √(2Eγ/πa)</td></tr>
+  <tr><td>Irwin [K]</td><td>Stress intensity</td><td>Kᵢ ≥ Kᴵᴄ</td><td>Kᵢ = Yσ√(πa)</td></tr>
+  <tr><td>Irwin [G]</td><td>Energy release rate</td><td>G ≥ Gᴄ</td><td>G = K²/E'</td></tr>
+  <tr><td>Wells (1961) — CTOD δ</td><td>Crack-tip opening</td><td>δ ≥ δᴄ</td><td>δ = Kᵢ²/(Eσᵧ)</td></tr>
+  <tr><td>Rice (1968) — J-integral</td><td>Generalised energy (elastic-plastic)</td><td>J ≥ Jᴄ</td><td>HRR fields</td></tr>
+</table></div>
+
+<!-- ================= PART III — FATIGUE ================= -->
+<h2 class="sec" id="p6"><span class="num">6</span> Material Fatigue — mechanism &amp; concepts</h2>
+<div class="box def"><span class="lbl">Definition (ASTM)</span><b>Fatigue</b> = progressive, localised, permanent structural change under fluctuating stress/strain that may end in cracks or fracture after enough cycles — <b>even when the peak load is below the yield or ultimate strength</b>. Fatigue life = number of cycles to failure.</div>
+<p>Fatigue gives <b>no warning</b> (little deflection), is <b>sudden</b> (brittle-like), and is only partly understood, so life is estimated empirically. Infamous cases: 1842 Versailles rail crash (locomotive axle); 1980 Alexander L. Kielland platform (fatigue crack in bracing D-6, 123 deaths).</p>
+
+<h3 class="sub">6.1 The five-stage failure mechanism</h3>
+<ol>
+  <li><b>Cyclic plastic deformation</b> → dislocations pile at the surface, forming persistent slip bands.</li>
+  <li><b>Micro-crack initiation</b> along slip bands, grain boundaries, inclusions.</li>
+  <li><b>Micro-crack coalescence</b> into a macro-crack.</li>
+  <li><b>Macro-crack propagation</b> — governed by ΔK (LEFM); plotted as da/dN vs ΔK.</li>
+  <li><b>Final failure</b> — remaining section can't carry the load; rapid fracture.</li>
+</ol>
+<div data-fig="fatstages" data-cap="Fracture surface: initiation site, beach marks (Stage II), fast final fracture (Stage III)."></div>
+<p class="small">Governing parameters across the process: K_t (stress-concentration) → K_I (stress-intensity) → K_IC (fracture toughness).</p>
+
+<h3 class="sub">6.2 Fatigue loading parameters</h3>
+<div class="eqm">\[ \sigma_a=\frac{\sigma_{max}-\sigma_{min}}{2}\ (\text{amplitude}),\qquad \sigma_m=\frac{\sigma_{max}+\sigma_{min}}{2}\ (\text{mean}) \]
+\[ \Delta\sigma=\sigma_{max}-\sigma_{min}\ (\text{range}),\qquad R=\frac{\sigma_{min}}{\sigma_{max}}\ (\text{stress ratio}),\qquad A=\frac{\sigma_a}{\sigma_m}\ (\text{amplitude ratio}) \]</div>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Type</th><th>R</th><th>Description</th></tr>
+  <tr><td>Fully reversed</td><td>−1</td><td>σ_m = 0 (rotating-bending)</td></tr>
+  <tr><td>Repeated</td><td>0</td><td>σmin = 0</td></tr>
+  <tr><td>Fluctuating</td><td>0 &lt; R &lt; 1</td><td>General tension–tension</td></tr>
+</table></div>
+<div data-fig="fatload" data-cap="Fully-reversed (R = −1), repeated (R = 0) and fluctuating cyclic loading with σmax, σmin, σa, σm, Δσ marked. From your study notes."></div>
+<div class="box example"><span class="lbl">Worked example (Feb 2025 · Q10)</span>σmin=50, σmax=250 → σ_a = (250−50)/2 = <b>100 MPa</b> (mean 150, range 200).</div>
+
+<h3 class="sub">6.3 HCF vs LCF — a guaranteed question</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th></th><th>High-Cycle Fatigue (HCF)</th><th>Low-Cycle Fatigue (LCF)</th></tr>
+  <tr><td>Cycles to failure</td><td>&gt; 10³ (often 10⁴–10⁵)</td><td>&lt; 10³</td></tr>
+  <tr><td>Stress level</td><td>Low (below yield)</td><td>High (local yielding)</td></tr>
+  <tr><td>Dominant strain</td><td>Mostly elastic</td><td>Plastic strain dominates</td></tr>
+  <tr><td>Best analysis</td><td>Stress-life (S-N)</td><td>Strain-life (ε-N)</td></tr>
+  <tr><td>Typical source</td><td>High-frequency loading (valve springs)</td><td>Start-up/shut-down thermal cycles</td></tr>
+</table></div>
+
+<h3 class="sub">6.4 Factors affecting fatigue</h3>
+<p>Cyclic load state (amplitude, mean, sequence, biaxiality) · geometry/stress concentration · surface quality · <b>residual stress</b> (compressive helps, tensile hurts) · microstructure (finer grains → longer life) · temperature · environment (corrosion fatigue).</p>
+<div class="box tip"><span class="lbl">Exam tip — residual stress</span>Shot-peening / cold-rolling put the surface in <b>compression</b>, lowering the effective mean stress there, delaying crack initiation and <b>increasing fatigue life</b>. Tensile residual stress does the opposite.</div>
+<div data-fig="fat_surface" data-cap="Surface-finish effect on fatigue strength: rougher / as-forged surfaces sharply lower the endurance limit versus a polished specimen. From your study notes."></div>
+<figure><img src="assets/img/notch_sensitivity.png" alt="Notch sensitivity vs ultimate tensile strength chart" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>Notch-sensitivity chart (course slide, Neuber): the notch sensitivity \(q=(K_f-1)/(K_t-1)\) rises with tensile strength and notch radius — stronger, sharper-notched steels feel stress raisers more.</figcaption></figure>
+
+<h3 class="sub">6.5 Fatigue testing &amp; the S-N curve</h3>
+<p>Rotating-beam (R.R. Moore) test: the specimen rotates under bending so each point cycles tension↔compression; max stress ≈ 5.09 FL/d³. Data plotted as stress S vs cycles N (usually log N).</p>
+<div data-fig="sncurve" data-cap="S-N curve: steel has a horizontal endurance limit; aluminium keeps falling."></div>
+<ul class="tight"><li><b>Endurance/fatigue limit:</b> stress below which (ferrous metals) fatigue never occurs (~10⁶–10⁷ cycles).</li>
+<li><b>Fatigue strength:</b> stress to fail at a specified N. <b>Fatigue life:</b> cycles permitted at a given stress.</li>
+<li><b>Endurance ratio</b> = endurance limit / UTS ≈ 0.3–0.4 for metals.</li></ul>
+<div class="box beyond"><span class="lbl">Beyond the slides — aluminium has no true endurance limit</span>Non-ferrous metals (Al, Cu) and high-strength steels show a continuously falling S-N curve, so engineers quote a <b>fatigue strength at 5×10⁸ cycles</b> instead — which is why aircraft aluminium is designed by safe-life / damage-tolerance, not infinite-life.</div>
+
+<!-- ================= PART III — FATIGUE ANALYSIS ================= -->
+<h2 class="sec" id="p7"><span class="num">7</span> Fatigue Analysis Approaches</h2>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Approach</th><th>Best for</th><th>Idea</th></tr>
+  <tr><td>Stress-life (S-N)</td><td>HCF</td><td>Oldest, most data; assumes little plasticity; least accurate for LCF</td></tr>
+  <tr><td>Strain-life (ε-N)</td><td>LCF</td><td>Analyses local plastic strain; cyclic stress–strain (Ramberg–Osgood)</td></tr>
+  <tr><td>LEFM (crack growth)</td><td>Structures with detectable cracks</td><td>Assumes a crack exists; predicts growth vs ΔK; used with inspection</td></tr>
+</table></div>
+
+<h3 class="sub">7.1 Stress-life: Basquin's equation</h3>
+<div class="eqm">\[ S_a=a\,N^{\,b}\ (b<0);\qquad \text{two lives: }\frac{S_1}{S_2}=\left(\frac{N_1}{N_2}\right)^{b} \]</div>
+<div class="box example"><span class="lbl">Worked example — Basquin (Feb 2025 · Q11)</span>S = a·N^(−0.15), S = 400 MPa at N = 10⁵. At 10⁶: S₂ = 400·10^(−0.15) = 400·0.708 ≈ <b>283 ≈ 280 MPa</b>.</div>
+<div class="box ref"><span class="lbl">From the reference books — estimated S-N with modifying factors (Juvinall &amp; Marshek Ch. 8) ★ 2026 internal</span>Juvinall builds the finite-life S-N line between <b>0.9 Sᵤ at 10³ cycles</b> and the corrected endurance limit at 10⁶ (or 10⁷). The endurance point is scaled by modifying factors: <b>C<sub>L</sub></b> (load) · <b>C<sub>G</sub></b> (gradient/size) · <b>C<sub>S</sub></b> (surface) · <b>C<sub>O</sub></b> (other). Fit S = aN^b through the two anchor points. This is exactly internal-2026 Q3 and July-2025 Q3(b) — see the worked solutions in the <a href="subjective-bank.html">Subjective Bank</a>.</div>
+
+<h3 class="sub">7.2 Strain-life (ε-N)</h3>
+<p>For LCF, total strain amplitude = elastic + plastic parts (Basquin + Coffin–Manson), with a cyclic Ramberg–Osgood curve (K′, n′).</p>
+<figure><img src="assets/img/strain_life.png" alt="Strain-life curve: elastic, plastic and total lines" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>Strain–life diagram (course slide): the <b>elastic</b> (Basquin, slope \(b\)) and <b>plastic</b> (Coffin–Manson, slope \(c\)) lines add to the <b>total</b> strain amplitude. Their crossing is the transition life \(2N_t\) separating LCF (left) from HCF (right).</figcaption></figure>
+<div class="box beyond"><span class="lbl">Beyond the slides — full strain-life equation</span><div class="eqm">\[ \frac{\Delta\varepsilon}{2}=\frac{\sigma_f'}{E}(2N)^b+\varepsilon_f'(2N)^c \]</div>First term (Basquin, exponent b) is the <i>elastic</i> line dominating HCF; second (Coffin–Manson, exponent c) is the <i>plastic</i> line dominating LCF. Where the two cross is the <b>transition life</b> separating LCF from HCF.</div>
+
+<h3 class="sub">7.3 LEFM crack growth &amp; Paris' law <span class="chip out">highest-yield numerical</span></h3>
+<div class="eqm">\[ \Delta K_I=Y\,\Delta\sigma\sqrt{\pi a},\qquad \Delta\sigma=\sigma_{max}-\sigma_{min}\quad(\textbf{use }\Delta\sigma,\ \text{NOT }\sigma_{max}) \]</div>
+<div data-fig="dadn" data-cap="Sigmoidal da/dN vs ΔK: Region I threshold, II Paris régime, III unstable."></div>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Region</th><th>Behaviour</th><th>Controlled by</th></tr>
+  <tr><td>I (threshold)</td><td>Below ΔK_th no growth (~10⁻¹⁰ m/cycle)</td><td>Microstructure, mean stress, environment</td></tr>
+  <tr><td>II (Paris)</td><td>Linear log–log: da/dN = C(ΔK)^m</td><td>ΔK; insensitive to microstructure</td></tr>
+  <tr><td>III (unstable)</td><td>Accelerating as Kmax → Kᴵᴄ</td><td>Fracture toughness K_c</td></tr>
+</table></div>
+<div class="eqm">\[ \text{Paris' law: }\frac{da}{dN}=C(\Delta K)^m;\qquad N=\int_{a_i}^{a_f}\frac{da}{C\,(Y\Delta\sigma\sqrt{\pi a})^m} \]
+\[ (m=3,\ Y,\Delta\sigma\text{ const}):\quad N=\frac{2}{C(Y\Delta\sigma\sqrt{\pi})^3}\left(a_i^{-1/2}-a_f^{-1/2}\right) \]</div>
+<div class="box example"><span class="lbl">Worked example — Paris-law life (Feb 2025 Q3c &amp; internal-2026 Q4) ★</span>Edge crack aᵢ = 30 mm, Δσ = 0→180 MPa, Kᴵᴄ = 150 MPa√m, Y = 1.12, C = 7.2×10⁻¹², m = 3.<br>
+aᴄ = (1/π)(150/(1.12·180))² = 0.1762 m → a_f = aᴄ/2 = 0.0881 m.<br>
+YΔσ√π = 357.3; cubed = 4.56×10⁷; ×C = 3.28×10⁻⁴. aᵢ⁻½ = 5.774, a_f⁻½ = 3.369 → <b>N ≈ 1.46×10⁴ cycles</b>.</div>
+<div class="box warn"><span class="lbl">Common mistakes</span>(1) using σmax instead of Δσ in ΔK; (2) forgetting the m=3 integral gives a⁻¹ᐟ² terms (exponent 1−m/2 = −½). Keep a in metres if C is in metre units.</div>
+
+<h3 class="sub">7.4 Variable amplitude — Palmgren–Miner rule</h3>
+<div class="eqm">\[ D=\sum_i\frac{n_i}{N_i};\qquad \text{failure when }D\ge1;\qquad \text{blocks to failure}=1/D_{block} \]</div>
+<div class="box beyond"><span class="lbl">Beyond the slides — Miner is only approximate</span>It ignores load sequence: high-then-low ≠ low-then-high because of crack-tip residual stresses and overload retardation. Real failures often occur at D between 0.7 and 2.2. Mentioning “sequence effects / D ≠ exactly 1” is a strong extra point. <span class="small">(Shukla states this cumulative-damage rule as ΣN₀/N = 1.)</span></div>
+
+<h3 class="sub">7.5 Fatigue / damage design strategies</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Strategy</th><th>Principle</th><th>Example</th></tr>
+  <tr><td>Infinite-life</td><td>Keep stress below the fatigue limit forever</td><td>Engine valve springs</td></tr>
+  <tr><td>Safe-life</td><td>Design for a finite life, then retire (with scatter margin)</td><td>Bearings, jet-engine parts</td></tr>
+  <tr><td>Fail-safe</td><td>System still holds if one part fails; multiple load paths</td><td>Aircraft structure</td></tr>
+  <tr><td>Damage-tolerance</td><td>Assume cracks; fracture mechanics + NDI before critical</td><td>Modern airframes</td></tr>
+</table></div>
+<p class="small">Damage-tolerance needs three things: residual strength, fatigue-crack-growth behaviour, and crack detection (NDI).</p>
+
+<!-- ================= PART III — DFMA ================= -->
+<h2 class="sec" id="p8"><span class="num">8</span> Design for Manufacturing &amp; Assembly (DFMA)</h2>
+<div class="box def"><span class="lbl">Definition</span><b>DFMA = DFM + DFA:</b> reduce time-to-market and total cost by making parts easy to make <i>and</i> easy to assemble, deciding this at the design stage.</div>
+<p class="small">Instructor's note: in the Dieter/Schmidt reference, focus on sections 13.5, 13.6, 13.11, 13.12, 13.14, 13.15.</p>
+
+<h3 class="sub">8.1 Paradigms → concurrent engineering</h3>
+<ol><li><b>Over-the-wall</b> — traditional; almost no design↔manufacturing communication.</li>
+<li><b>Sign-off</b> — manufacturing must approve drawings.</li>
+<li><b>Limited collaboration</b> — teams interact only on critical points.</li>
+<li><b>Concurrent engineering</b> — design &amp; manufacturing work together from concept to launch (basis of DFX).</li></ol>
+<p><b>Key fact:</b> 60–80% of product cost is fixed by design decisions (Feb 2025 Q13 quotes the 70–80% band).</p>
+
+<h3 class="sub">8.2 DFM vs DFA</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th></th><th>DFM</th><th>DFA</th></tr>
+  <tr><td>Goal</td><td>Reduce part production cost</td><td>Reduce assembly cost</td></tr>
+  <tr><td>Method</td><td>Optimise material &amp; process, reduce complexity</td><td>Reduce part count, simplify, fewer assembly moves</td></tr>
+  <tr><td>When</td><td>Detailed design</td><td>Early, before prototypes</td></tr>
+</table></div>
+<div class="box tip"><span class="lbl">Exam tip (Feb 2025 · Q14)</span>DFA's role in DFM is “optimising the assembly process for efficiency.”</div>
+
+<h3 class="sub">8.3 Five principles &amp; guidelines</h3>
+<p><b>Five principles of DFMA:</b> Process · Design · Material · Environment · Compliance/Testing.</p>
+<div class="grid cols-2">
+  <div class="card"><b>DFM guidelines</b><ul class="tight"><li>Minimise number of parts; standardise components</li><li>Use common parts across product lines</li><li>Keep designs simple &amp; functional; make parts multifunctional</li><li>Avoid tight tolerances; minimise finishing operations</li></ul></div>
+  <div class="card"><b>DFA guidelines</b><ul class="tight"><li>Minimise part count &amp; assembly directions</li><li>Use subassemblies; mistake-proof (poka-yoke)</li><li>Avoid separate fasteners; self-aligning &amp; self-locating parts</li><li>Provide unobstructed access; design for symmetry (or clear asymmetry)</li></ul></div>
+</div>
+<p class="small">Assembly = handling (grasp, orient, position) + insertion &amp; fastening. Automation levels: manual, automatic (feeder + workhead), robotic.</p>
+
+<h3 class="sub">8.4 Classic case — Ford vs GM</h3>
+<p>Boothroyd's DFA software saved Ford billions on the Taurus (1988). GM traced 41% of its productivity gap to manufacturability: Ford's front bumper had <b>10 parts vs GM's 100</b>.</p>
+
+<h3 class="sub">8.5 Process-specific DFM rules</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Process</th><th>Key design rules</th></tr>
+  <tr><td>Castings</td><td>Orderly (directional) solidification; uniform section; avoid shrinkage cavities &amp; hot tears; pattern must draw; add machining allowance</td></tr>
+  <tr><td>Forging</td><td>Taper surfaces (draft 5–7° external, 7–10° internal); single-plane parting line; uniform sections; allow for scale &amp; warpage</td></tr>
+  <tr><td>Machining</td><td>Machine only functional surfaces; good reference/holding surface; avoid re-clamping; minimise burrs</td></tr>
+  <tr><td>Welding</td><td>Straight force flow-lines, fewest welds; equal-thickness parts; low-stress locations; ensure access</td></tr>
+</table></div>
+<div class="box ref"><span class="lbl">From the reference books — DFX aspects (Ulrich &amp; Eppinger)</span>DFX = “Design for X,” X = any life-cycle concern: Manufacture, Assembly, Reliability, Safety, Serviceability/Maintenance, Environment/Sustainability, Cost, Quality, Ergonomics. Ulrich &amp; Eppinger frame DFM as estimating manufacturing cost, reducing component/assembly/overhead cost, then iterating.</div>
+
+<!-- ================= PART III — RELIABILITY ================= -->
+<h2 class="sec" id="p9"><span class="num">9</span> Design for Safety &amp; Reliability</h2>
+<div class="box def"><span class="lbl">Definition</span><b>Reliability R(t)</b> = probability that a system performs its intended function, within tolerances, under stated conditions, for a specified time. 0 ≤ R ≤ 1.</div>
+<p>Design is a three-way trade-off: <b>performance ↔ reliability ↔ cost</b>. Reliability grows through a test–fix–test–fix prototype cycle.</p>
+
+<h3 class="sub">9.1 The bathtub curve</h3>
+<div data-fig="bathtub" data-cap="Failure rate vs time: infant mortality → useful life (constant λ) → wear-out."></div>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Region</th><th>Failure rate</th><th>Cause</th></tr>
+  <tr><td>1 · Infant mortality (burn-in)</td><td>Decreasing</td><td>Manufacturing defects</td></tr>
+  <tr><td>2 · Useful life</td><td>Constant (random)</td><td>Random overloads: surges, impact, vibration</td></tr>
+  <tr><td>3 · Wear-out</td><td>Increasing</td><td>Corrosion, fatigue, wear</td></tr>
+</table></div>
+
+<h3 class="sub">9.2 Reliability functions &amp; indices</h3>
+<div class="eqm">\[ F(t)=\int_0^t f\,dx\ (\text{CDF, unreliability}),\qquad R(t)=1-F(t),\qquad \lambda(t)=\frac{f(t)}{R(t)} \]
+\[ \lambda=\frac{\#\text{ failures}}{\text{operating time}},\qquad \text{MTTF}=\int_0^\infty R\,dt=\frac1\lambda\ (\text{non-repairable}),\qquad \text{MTBF}=\frac1\lambda\ (\text{repairable}) \]</div>
+
+<h3 class="sub">9.3 Three failure-time distributions</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Distribution</th><th>Reliability R(t)</th><th>Use</th></tr>
+  <tr><td>Exponential</td><td>e^(−λt) (constant λ; memoryless)</td><td>Useful-life / random failures</td></tr>
+  <tr><td>Normal</td><td>1 − Φ(z), z = (t−μ)/σ</td><td>Wear-out / aging</td></tr>
+  <tr><td>Weibull</td><td>e^(−(t/θ)^m)</td><td>Most versatile — all three regions</td></tr>
+</table></div>
+<p class="small">Weibull shape m (≡ β): m&lt;1 → decreasing rate (infant mortality); m=1 → exponential; m&gt;1 → increasing (wear-out); m≈3.5 → ≈ normal. θ = characteristic life.</p>
+<div data-fig="rel_weibull" data-cap="Weibull distribution for different shape parameters m (β). From your study notes."></div>
+<div class="box example"><span class="lbl">Worked example — Normal (Feb 2025 · Q4c)</span>μ=6 yr, σ=1 yr. (i) P(fail&lt;7): z=1 → Φ=0.8413. (ii) R(7)=1−0.8413=<b>0.1587</b>. (iii) 10% failure: Φ(z)=0.10 → z=−1.28 → T = 6−1.28 = <b>4.72 yr</b>.</div>
+<div class="box example"><span class="lbl">Worked example — Weibull (Feb 2025 · Q16)</span>m=0.7, θ=7500, t=1450: R = e^(−(1450/7500)^0.7) = e^(−0.314) = <b>0.728 ≈ 72.8%</b>.</div>
+<div class="box example"><span class="lbl">Worked example — Exponential parallel (July 2025 · Q4b)</span>MTTF=650 h, t=850: λt=1.308, R=e^(−1.308)=<b>0.270</b>; F=0.730; two in parallel R=1−0.730²=<b>0.468</b>; need n≥3 for R≥0.6.</div>
+
+<h3 class="sub">9.4 System reliability</h3>
+<div class="eqm">\[ \text{Series (all needed): }R_s=\prod R_i=e^{-(\sum\lambda_i)t}\qquad \text{Parallel (any one): }R_s=1-\prod(1-R_i) \]</div>
+<div data-fig="rel_series" data-cap="Series vs parallel (redundant) system reliability block diagrams. From your study notes."></div>
+<div class="box example"><span class="lbl">Worked example — series vs parallel</span>Units 0.95, 0.85, 0.75. Series R = 0.605; Parallel R = 1−(0.05)(0.15)(0.25) = <b>0.998</b>. Redundancy dramatically improves reliability.</div>
+
+<h3 class="sub">9.5 Design for Reliability (DFR) &amp; Safety (DFS)</h3>
+<p><b>DFR strategies:</b> fail-safe (monitor the weak link), “one-horse-shay” (equal-life components), absolute worst-case. <b>DFR guidelines:</b> margin of safety, derating, redundancy, durability, damage tolerance, ease of inspection, simplicity, specificity.</p>
+<div class="box tip"><span class="lbl">Exam tips</span>Q15: increasing <b>complexity</b> does NOT enhance reliability. · Q19: for DFR of electrical appliances, “Safety” is the odd one out among derating/redundancy/simplicity. · Q17: “safety factor” = ratio of actual load to design load (as worded).</div>
+<p><b>Reliability ≠ Safety.</b> An aircraft that never takes off is safe but not reliable; one that flies reliably but kills passengers is reliable but not safe.</p>
+<div data-fig="rel_interf" data-cap="Stress–strength interference: the overlap of the stress and strength distributions is the probability of failure; the gap is the safety margin. From your study notes."></div>
+<p><b>Design for Safety — hazard hierarchy:</b> (1) design the hazard out; (2) add protective devices (guards, cut-offs, relief valves); (3) warn the user (labels, lights, sounds). <b>Fail-safe variants:</b> fail-passive (circuit breaker), fail-active (standby redundancy), fail-operational (valve fails open).</p>
+<div class="box beyond"><span class="lbl">Beyond the slides — FMEA &amp; FTA</span><b>FMEA</b> (Failure Mode &amp; Effects Analysis) is <i>bottom-up</i>: list each component's failure modes, effects and a Risk Priority Number (Severity×Occurrence×Detection). <b>FTA</b> (Fault Tree Analysis) is <i>top-down</i>: start from an undesired top event and trace causes with AND/OR gates. Naming these signals real-world literacy.</div>
+
+<!-- ================= PART III — ERGONOMICS ================= -->
+<h2 class="sec" id="p10"><span class="num">10</span> Human Engineering / Ergonomics</h2>
+<div class="box def"><span class="lbl">Definition</span><b>Ergonomics</b> = designing so the product fits human abilities and limits — “fitting the job to the man,” not the man to the job. Goal: optimise efficiency, health, safety and comfort. (Greek <i>ergos</i> work + <i>nomos</i> law.)</div>
+
+<h3 class="sub">10.1 Four forms of human factors</h3>
+<div class="tbl-wrap"><table class="compact">
+  <tr><th>Factor</th><th>Concerns</th><th>Example</th></tr>
+  <tr><td>Anthropometric</td><td>Physical size of the body (static interaction)</td><td>Reach, seat/table height, lever placement</td></tr>
+  <tr><td>Physiological</td><td>Human sensations: visual, auditory, tactile</td><td>Alarm loudness, display brightness</td></tr>
+  <tr><td>Psychological</td><td>Mental: behaviour, strain, fatigue</td><td>Digital display for precise values; pointer for trends</td></tr>
+  <tr><td>Ergonomic</td><td>Whole working system</td><td>Preventing musculoskeletal disorders (MSD)</td></tr>
+</table></div>
+<div data-fig="ergo_factors" data-cap="The forms of human factors in design. From your study notes."></div>
+<div class="box tip"><span class="lbl">Exam tips (Feb 2025 · Q18, Q20)</span>Anthropometric = physical size of the body. · For rapidly changing quantitative info the best display is the <b>analog dial (moving pointer)</b> — pointers show rate/direction; digital is best for precise static values.</div>
+
+<h3 class="sub">10.2 The 10 principles &amp; the man–machine system</h3>
+<p>(1) Neutral postures · (2) reduce excessive force · (3) everything in easy reach · (4) proper heights · (5) reduce motions · (6) minimise fatigue/static load · (7) minimise pressure points · (8) provide clearance · (9) move/stretch · (10) comfortable environment.</p>
+<p>The <b>man</b> is the flexible controller: senses stimuli → perceives → judges → stores/recalls → decides → acts. Design must match task requirements to human capability.</p>
+<div data-fig="ergo_mm" data-cap="The man–machine system: human (sensing → processing → controlling) and machine (display → operations → controls) coupled through the user interface, within the environment, to achieve the task. From your study notes."></div>
+
+<h3 class="sub">10.3 Guidelines — displays &amp; controls</h3>
+<div class="grid cols-2">
+  <div class="card"><b>Displays</b><ul class="tight"><li>Show only the accuracy needed; no superfluous info</li><li>Scale subdivisions in multiples of 1, 2 or 5</li><li>Sharp single-plane pointer (avoid parallax)</li><li><b>Letter height (mm) = viewing distance (mm) / 200</b></li></ul></div>
+  <div class="card"><b>Controls</b><ul class="tight"><li>Locate clearly visible &amp; comfortably operable</li><li><b>Clockwise → increase</b>; pointer moves with the control</li><li>Mark on/off &amp; levels; colour/shape/symbol coding</li><li>Use conventional standard sizes to avoid errors</li></ul></div>
+</div>
+<div class="box beyond"><span class="lbl">Beyond the slides — design for the extremes</span>Size <b>reach</b> for the 5th-percentile user (if the smallest can reach, everyone can) and <b>clearances</b> for the 95th-percentile user (if the largest fits, everyone fits). Designing for the “average person” fits almost no one.</div>
+
+<!-- ================= FORMULA SHEET ================= -->
+<h2 class="sec" id="formulas"><span class="num">11</span> Master formula sheet</h2>
+<h4>Stress / strain / failure</h4>
+<div class="eqm">\[ \sigma=\frac{F}{A}\quad \varepsilon=\frac{\delta}{L}\quad \tau=\frac{T\rho}{J}\quad \sigma_b=\frac{My}{I}\quad G\approx0.4E\quad \tau_y\approx0.5\text{–}0.75\,\sigma_y \]
+\[ \sigma_{1,2}=\frac{\sigma_x+\sigma_y}{2}\pm\sqrt{\left(\tfrac{\sigma_x-\sigma_y}{2}\right)^2+\tau_{xy}^2}\qquad \tau_{\max}=\frac{\sigma_1-\sigma_3}{2} \]
+\[ \text{Tresca: }\sigma_1-\sigma_3=\sigma_y\quad \text{von Mises: }\sqrt{\sigma_1^2-\sigma_1\sigma_2+\sigma_2^2}=\sigma_y\quad n=\frac{S}{\sigma}\quad J=\frac{\pi}{32}(D^4-d^4) \]</div>
+<h4>Fracture</h4>
+<div class="eqm">\[ K_I=Y\sigma\sqrt{\pi a}\quad a_c=\frac1\pi\!\left(\frac{K_{IC}}{Y\sigma}\right)^2\quad G=\frac{K_I^2}{E'}\quad \sigma_f=\sqrt{\frac{2E\gamma}{\pi a}}\quad \text{CTOD }\delta=\frac{K_I^2}{E\sigma_y} \]
+\[ Y:\ 1.0\text{ central},\ 1.12\text{ edge},\ 0.64\ (2/\pi)\text{ penny};\qquad \text{Irwin }r_y=\frac{1}{2\pi}\!\left(\frac{K_I}{\sigma_{ys}}\right)^2 \]
+\[ \text{Similar-sheet scaling: }\sigma_{f1}\sqrt{a_1}=\sigma_{f2}\sqrt{a_2} \]</div>
+<h4>Fatigue</h4>
+<div class="eqm">\[ \sigma_a=\frac{\sigma_{max}-\sigma_{min}}{2}\quad \sigma_m=\frac{\sigma_{max}+\sigma_{min}}{2}\quad R=\frac{\sigma_{min}}{\sigma_{max}}\quad \text{Basquin }S_a=aN^b \]
+\[ \Delta K=Y\Delta\sigma\sqrt{\pi a}\quad \text{Paris }\frac{da}{dN}=C(\Delta K)^m\quad \text{Miner }\sum\frac{n_i}{N_i}=1\quad \text{endurance ratio}\approx0.3\text{–}0.4 \]
+\[ \text{Paris life }(m=3):\ N=\frac{2\,(a_i^{-1/2}-a_f^{-1/2})}{C(Y\Delta\sigma\sqrt{\pi})^3}\qquad \text{S-N fit: }b=\frac{\log(S_1/S_2)}{\log(N_1/N_2)},\ a=\frac{S_1}{N_1^{\,b}} \]</div>
+<h4>Reliability</h4>
+<div class="eqm">\[ R=1-F\quad \lambda=\frac{f}{R}=\frac{\#\text{fail}}{\text{op. time}}\quad \text{MTTF}=\text{MTBF}=\frac1\lambda\quad \text{Exp }R=e^{-\lambda t} \]
+\[ \text{Normal }z=\frac{t-\mu}{\sigma},\ R=1-\Phi(z)\quad \text{Weibull }R=e^{-(t/\theta)^m}\quad \text{Series }R=\prod R_i\quad \text{Parallel }R=1-\prod(1-R_i) \]</div>
+<h4>Ergonomics</h4>
+<div class="eqm">\[ \text{Letter height (mm)}=\frac{\text{viewing distance (mm)}}{200} \]</div>
+
+<!-- ================= CHECKLIST ================= -->
+<h2 class="sec" id="checklist"><span class="num">12</span> Last-night revision checklist</h2>
+<div class="card">
+<ul class="tight">
+  <li>☐ Purpose of FoS; write n = S/σ; design factor vs factor of safety.</li>
+  <li>☐ Draw the Tresca hexagon inside the Von Mises ellipse; state which is conservative.</li>
+  <li>☐ Write generalized Hooke's law and the stress tensor (6 independent components).</li>
+  <li>☐ Sketch a ceramic stress–strain curve; explain plane stress vs plane strain.</li>
+  <li>☐ Name the three crack modes; write K = Yσ√(πa); recall Y = 1.12 (edge).</li>
+  <li>☐ Compute critical crack length aᴄ; do the “similar sheet” σ_f1√a₁ = σ_f2√a₂ scaling.</li>
+  <li>☐ Define G and the K–G relation; Griffith &amp; the Irwin–Orowan modification.</li>
+  <li>☐ Contrast HCF vs LCF; compute σ_a, σ_m, R, A from σmax/σmin.</li>
+  <li>☐ Build an S-N line with modifying factors (C_L, C_G, C_S); use Basquin ratio.</li>
+  <li>☐ Integrate Paris' law (remember Δσ, a in metres); apply Miner's rule; blocks = 1/D.</li>
+  <li>☐ List the four fatigue design strategies; explain damage tolerance.</li>
+  <li>☐ Explain concurrent engineering &amp; give four DFM + four DFA guidelines.</li>
+  <li>☐ Do a Normal, Weibull and exponential (series/parallel) reliability calculation.</li>
+  <li>☐ Sketch the bathtub curve; define λ, MTTF, MTBF; three fail-safe variants.</li>
+  <li>☐ Name the four human-factor types; letter-height rule &amp; clockwise-increase rule.</li>
+</ul>
+</div>
+<div class="box tip"><span class="lbl">In the exam</span>For every numerical: write the formula → substitute in consistent SI units → box the answer with units. For “predict the failure mode,” compute BOTH the fracture load and the yield load — the smaller governs. It's an “attempt-all” paper, so write something structured for every part.</div>
+
+  </div><!-- /sg-main -->
+  </div><!-- /sg-layout -->
+
+<div class="footer">— End of Study Guide · Good luck, Sukalpa —<br>
+Next: drill the <a href="objective-bank.html">Objective Bank</a>, then practise the <a href="subjective-bank.html">Subjective Bank</a> and a <a href="model-exam.html">Model Exam</a>.</div>
+</main>
+
+<button class="back-top" onclick="scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script src="assets/slidefigs.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/guide.js"></script>
+</body>
+</html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEPP 436 — Last-Minute Study Guide</title>
+
+<!-- MathJax: proper equation typesetting (needs internet on first open; caches after). -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root{
+  --bg:#f4f6fb; --panel:#ffffff; --panel-2:#f8fafc; --ink:#1a2233; --ink-soft:#4a5568;
+  --muted:#7a8699; --line:#e3e8f0; --brand:#2952e3; --brand-soft:#e8eeff; --brand-ink:#1c3aa8;
+  --accent:#0d9488; --shadow:0 1px 3px rgba(20,30,60,.08),0 8px 24px rgba(20,30,60,.06);
+  --tip:#0e9f6e; --tip-bg:#e7f8f0; --tip-line:#8fe3c1;
+  --warn:#d9480f; --warn-bg:#fff2e8; --warn-line:#ffc59e;
+  --beyond:#b45309; --beyond-bg:#fff7e6; --beyond-line:#f5c77a;
+  --mem:#7c3aed; --mem-bg:#f3ecff; --mem-line:#d4bbff;
+  --ex:#1d6fd8; --ex-bg:#e9f2ff; --ex-line:#a9caf7;
+  --ok:#0e9f6e; --bad:#e03131;
+  --radius:14px;
+}
+:root[data-theme="dark"]{
+  --bg:#0e1420; --panel:#161e2e; --panel-2:#1b2436; --ink:#e6ebf4; --ink-soft:#b6c0d4;
+  --muted:#8492ab; --line:#28324a; --brand:#6b8dff; --brand-soft:#1c2842; --brand-ink:#a9c0ff;
+  --accent:#2dd4bf; --shadow:0 1px 3px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+  --tip:#34d399; --tip-bg:#0f2a22; --tip-line:#1f5c46;
+  --warn:#ff9f6b; --warn-bg:#2c1a10; --warn-line:#6b3a1f;
+  --beyond:#f5c25b; --beyond-bg:#2a2210; --beyond-line:#6b5620;
+  --mem:#c4a3ff; --mem-bg:#241a3a; --mem-line:#4a366f;
+  --ex:#7fb0ff; --ex-bg:#132340; --ex-line:#2c4a7a;
+  --ok:#34d399; --bad:#ff6b6b;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.62; font-size:16px; -webkit-font-smoothing:antialiased;}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px 90px}
+
+/* ---------- Top bar (matches the other pages) ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(20,50,79,.97);backdrop-filter:saturate(1.4) blur(6px);color:#fff;border-bottom:1px solid #0d2438}
+.topbar .inner{max-width:920px;margin:0 auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:9px 20px}
+.brand{font-weight:700;letter-spacing:.2px;margin-right:auto;display:flex;align-items:center;gap:9px;font-size:15px;color:#fff}
+.brand .code{background:#fff;color:#14324f;border-radius:6px;padding:2px 7px;font-size:12.5px;font-weight:800}
+.topbar nav{display:flex;gap:3px;flex-wrap:wrap;align-items:center}
+.topbar nav a{color:#cfe0f0;padding:6px 11px;border-radius:8px;font-size:13.7px;font-weight:600}
+.topbar nav a:hover{background:rgba(255,255,255,.12);color:#fff;text-decoration:none}
+.topbar nav a.active{background:#fff;color:#14324f}
+.tgl{border:1px solid var(--line);background:var(--panel-2);color:var(--ink);border-radius:9px;padding:6px 11px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+
+/* ---------- Hero (matches the other pages) ---------- */
+.hero{background:linear-gradient(135deg,#14324f,#265b86);color:#fff;border-radius:var(--radius);padding:34px 30px;margin:22px 0 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(255,255,255,.12),transparent 70%)}
+.hero .kicker{text-transform:uppercase;letter-spacing:2px;font-size:12px;opacity:.85;font-weight:700}
+.hero h1{margin:.25em 0 .15em;font-size:clamp(26px,4vw,40px);line-height:1.1}
+.hero p{margin:.3em 0;opacity:.94;max-width:60ch;position:relative}
+.hero .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;position:relative}
+.hero .chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:4px 12px;font-size:12.5px;font-weight:600}
+
+/* ---------- Study toolbar ---------- */
+.studybar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
+.studybar .btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:9px;padding:7px 13px;font-size:12.5px;font-weight:700;cursor:pointer}
+.studybar .btn:hover{background:var(--panel-2)}
+.studybar .hint{font-size:12.5px;color:var(--muted)}
+
+/* ---------- Cards ---------- */
+section{scroll-margin-top:60px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden}
+.card > .head{display:flex;align-items:center;gap:12px;padding:15px 20px;cursor:pointer;user-select:none}
+.card > .head:hover{background:var(--panel-2)}
+.card > .head .badge{flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:var(--brand-soft);color:var(--brand-ink);display:grid;place-items:center;font-weight:800;font-size:15px}
+.card > .head h2{margin:0;font-size:17px;flex:1;letter-spacing:.2px}
+.card > .head .star{color:#f0a500;font-size:13px;font-weight:700}
+.card > .head .chev{color:var(--muted);transition:.2s;font-size:13px}
+.card.collapsed .body{display:none}
+.card.collapsed .head .chev{transform:rotate(-90deg)}
+.card .body{padding:10px 20px 18px;border-top:1px solid var(--line)}
+.lead{font-size:14px;color:var(--ink-soft);margin:6px 0 12px}
+
+/* ---------- Expandable Q&A ---------- */
+.qa{border:1px solid var(--line);border-radius:11px;margin:10px 0;overflow:hidden;background:var(--panel-2)}
+.qa-head{display:flex;gap:10px;align-items:flex-start;padding:12px 15px;cursor:pointer;user-select:none}
+.qa-head:hover{background:var(--brand-soft)}
+.qa-num{flex:0 0 auto;font-weight:800;color:var(--brand-ink);font-size:13.5px;min-width:20px}
+.qa-q{flex:1;font-weight:650;font-size:14.7px}
+.qa-toggle{flex:0 0 auto;color:var(--brand);font-size:12px;font-weight:800;white-space:nowrap;padding-top:2px}
+.qa-body{display:none;padding:6px 16px 15px;border-top:1px solid var(--line);background:var(--panel)}
+.qa.open .qa-body{display:block}
+.qa-body p{margin:9px 0}
+.qa-body h5{margin:14px 0 5px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+
+/* variable glossary */
+.vars{list-style:none;margin:8px 0;padding:10px 14px;background:var(--panel-2);border:1px dashed var(--line);border-radius:9px;font-size:13.5px}
+.vars li{margin:3px 0;color:var(--ink-soft)}
+.vars li b{color:var(--brand-ink)}
+.use{font-size:13.5px;color:var(--ink-soft);margin:6px 0}
+.use b{color:var(--accent)}
+
+/* ---------- Callout boxes ---------- */
+.box{border-radius:11px;padding:11px 14px;margin:12px 0;border:1px solid;font-size:14px}
+.box .bx-t{font-weight:800;font-size:11px;letter-spacing:.7px;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.box p:first-of-type{margin-top:2px}.box p:last-child{margin-bottom:0}
+.box.tip{background:var(--tip-bg);border-color:var(--tip-line)} .box.tip .bx-t{color:var(--tip)}
+.box.warn{background:var(--warn-bg);border-color:var(--warn-line)} .box.warn .bx-t{color:var(--warn)}
+.box.beyond{background:var(--beyond-bg);border-color:var(--beyond-line)} .box.beyond .bx-t{color:var(--beyond)}
+.box.mem{background:var(--mem-bg);border-color:var(--mem-line)} .box.mem .bx-t{color:var(--mem)}
+.box.ex{background:var(--ex-bg);border-color:var(--ex-line)} .box.ex .bx-t{color:var(--ex)}
+
+/* ---------- Tables ---------- */
+.tablewrap{overflow-x:auto;margin:12px 0;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:460px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--panel-2);font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);font-weight:700}
+tr:last-child td{border-bottom:none}
+td strong{color:var(--brand-ink)}
+
+/* ---------- Figures ---------- */
+figure{margin:14px 0;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+figure svg{max-width:100%;height:auto}
+figure img{max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px}
+figcaption{font-size:12.5px;color:var(--muted);margin-top:9px;text-align:center}
+.figrow{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.figrow figure{flex:1 1 280px;margin:8px 0}
+
+/* mini grid */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.mini{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+.mini b{color:var(--brand-ink);display:block;margin-bottom:3px;font-size:13.5px}
+.mini span{font-size:13px;color:var(--ink-soft)}
+
+/* formula-sheet cards */
+.fcard{border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:10px;padding:6px 16px 12px;margin:12px 0;background:var(--panel-2)}
+.fcard .ft{font-weight:800;font-size:13px;color:var(--brand-ink);margin:8px 0 2px}
+
+/* checklist */
+.checklist{list-style:none;margin:10px 0;padding:0}
+.checklist li{margin:0}
+.checklist label{display:flex;gap:11px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin:8px 0;cursor:pointer;background:var(--panel-2);font-size:14.3px;transition:.12s}
+.checklist label:hover{border-color:var(--brand)}
+.checklist input{margin-top:3px;width:17px;height:17px;accent-color:var(--brand);flex:0 0 auto}
+.checklist input:checked + span{text-decoration:line-through;color:var(--muted)}
+.ck-note{font-size:12.5px;color:var(--muted);margin:2px 0 8px}
+
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+mjx-container[display="true"]{margin:12px 0 !important}
+
+.back-top{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--brand);font-size:20px;cursor:pointer;box-shadow:var(--shadow);display:none}
+.back-top.show{display:block}
+@media print{.topbar,.back-top,.tgl,.studybar{display:none}.card,.qa{break-inside:avoid;box-shadow:none}
+  .card .body,.qa-body{display:block!important}}
+</style>
+</head>
+<body>
+
+<header class="topbar"><div class="inner">
+  <span class="brand"><span class="code">MEPP 436</span> Advanced Machine Design</span>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="study-guide.html">Study Guide</a>
+    <a href="objective-bank.html">Objective Bank</a>
+    <a href="subjective-bank.html">Subjective Bank</a>
+    <a href="last-minute-guide.html" class="active">Last-Minute</a>
+    <a href="model-exam.html">Model Exam</a>
+  </nav>
+</div></header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="kicker">Advanced Machine Design · Self-Quiz Cram Sheet</div>
+    <h1>Last-Minute Study Guide</h1>
+    <p>Each question is collapsed — read it, try to answer from memory, then click to reveal the full model answer, figures and worked example. Every formula lists what its symbols mean and how to use it. Failure theories lead, because they anchor most of Section&nbsp;A and Q1.</p>
+    <div class="chips"><span>⭐ Failure theories</span><span>Fracture &amp; LEFM</span><span>Fatigue &amp; Paris</span><span>Reliability · DFMA</span><span>Explained formulas</span></div>
+  </div>
+
+  <div class="studybar">
+    <button class="btn" id="expandAll">▾ Reveal all answers</button>
+    <button class="btn" id="collapseAll">▸ Hide all answers</button>
+    <button class="tgl" id="themeBtn">🌙 Dark</button>
+    <span class="hint">On this page:
+      <a href="#failure">Failure</a> · <a href="#stress">Stress</a> · <a href="#fracture">Fracture</a> · <a href="#fatigue">Fatigue</a> · <a href="#reliability">Reliability</a> · <a href="#formulas">Formulas</a> · <a href="#checklist">Checklist</a>
+    </span>
+  </div>
+
+  <!-- ================= FAILURE THEORIES ================= -->
+  <section id="failure"><div class="card">
+    <div class="head"><span class="badge">1</span><h2>Failure Theories <span class="star">★ most important</span></h2><span class="chev">▼</span></div>
+    <div class="body">
+      <p class="lead">When does a part fail under combined stress? Compare the stress state to a simple tension test using one of the five classical theories. Exam focus: Rankine (brittle), Tresca and von Mises (ductile).</p>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q1</span><span class="qa-q">State the five classical failure theories — which suits ductile, which brittle?</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <div class="tablewrap"><table>
+            <tr><th>Theory (a.k.a.)</th><th>Criterion</th><th>Best for</th><th>Yield surface</th></tr>
+            <tr><td>Max principal stress (<strong>Rankine</strong>)</td><td>\(\sigma_1\ge\sigma_{ult}\)</td><td>Brittle</td><td>Square</td></tr>
+            <tr><td>Max shear stress (<strong>Tresca</strong>)</td><td>\(\sigma_1-\sigma_3\ge\sigma_y\)</td><td>Ductile — conservative</td><td>Hexagon</td></tr>
+            <tr><td>Max principal strain (St.&nbsp;Venant)</td><td>\(\varepsilon_1\ge\varepsilon_y\)</td><td>Rarely used</td><td>Rhombus</td></tr>
+            <tr><td>Max total strain energy (Haigh)</td><td>\(U\ge U_{y}\)</td><td>—</td><td>Ellipse</td></tr>
+            <tr><td>Max distortion energy (<strong>von Mises</strong>)</td><td>\(\sigma'\ge\sigma_y\)</td><td>Ductile — most accurate</td><td>Ellipse</td></tr>
+          </table></div>
+          <div class="box mem"><div class="bx-t">🧠 Memory hook</div><strong>B</strong>rittle → <strong>R</strong>ankine (normal stress). <strong>D</strong>uctile → <strong>D</strong>istortion (von Mises) or shear (Tresca). "Tresca is timid" — it yields first, so it's conservative.</div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q2</span><span class="qa-q">Write the Tresca and von Mises criteria and explain every symbol.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <p><strong>Tresca</strong> (maximum shear stress) — yielding starts when the largest shear stress equals the tension-test shear value \(\sigma_y/2\):</p>
+          \[ \tau_{\max}=\frac{\sigma_1-\sigma_3}{2}=\frac{\sigma_y}{2}\;\Longrightarrow\; \sigma_1-\sigma_3=\sigma_y \]
+          <p><strong>von Mises</strong> (distortion energy) — general 3-D and the biaxial case \(\sigma_3=0\):</p>
+          \[ \sigma'=\sqrt{\tfrac12\big[(\sigma_1-\sigma_2)^2+(\sigma_2-\sigma_3)^2+(\sigma_3-\sigma_1)^2\big]}\ge\sigma_y,\qquad \sigma'_{\text{biaxial}}=\sqrt{\sigma_1^2-\sigma_1\sigma_2+\sigma_2^2} \]
+          <ul class="vars">
+            <li><b>\(\sigma_1\ge\sigma_2\ge\sigma_3\)</b> = the three principal stresses (largest → smallest), MPa</li>
+            <li><b>\(\sigma_y\)</b> = uniaxial tensile yield strength of the material, MPa</li>
+            <li><b>\(\sigma'\)</b> = von Mises "equivalent" stress — one number that stands in for the whole stress state</li>
+            <li><b>\(\tau_{\max}\)</b> = maximum shear stress in the element, MPa</li>
+          </ul>
+          <p class="use"><b>How to use:</b> find the principal stresses, plug into a criterion, and yielding is predicted the moment the left side reaches \(\sigma_y\). Factor of safety \(n=\sigma_y/\sigma'\) (von Mises) or \(n=\sigma_y/(\sigma_1-\sigma_3)\) (Tresca).</p>
+          <div class="box ex"><div class="bx-t">✎ Worked example</div>Plane stress \(\sigma_1=120,\ \sigma_2=40,\ \sigma_3=0\) MPa, \(\sigma_y=250\) MPa.<br>
+            Tresca: \(\sigma_1-\sigma_3=120\Rightarrow n=250/120=2.08\).<br>
+            von Mises: \(\sigma'=\sqrt{120^2-120\cdot40+40^2}=\sqrt{11200}=105.8\Rightarrow n=250/105.8=2.36\).<br>
+            Tresca gives the smaller (safer) \(n\), as expected.</div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q3</span><span class="qa-q">Sketch the Tresca hexagon inside the von Mises ellipse. Which is conservative and why?</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <div data-fig="yield" data-cap="Yield surfaces in principal-stress space (course slide): the Tresca hexagon is inscribed inside the von Mises ellipse."></div>
+          <figure><img src="assets/img/ft_compare.png" alt="All five failure theories compared with experimental yield data" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>All five theories overlaid with real yield data (course slide): ductile metals (steel, copper, aluminium) hug the <strong>von Mises ellipse</strong>; brittle cast iron follows <strong>Rankine</strong>. Tresca is the inscribed hexagon.</figcaption></figure>
+          <p class="use"><b>The five yield surfaces individually</b> (course slides): a point inside is safe, on the boundary it yields.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:10px 0">
+            <figure style="flex:1 1 145px;max-width:200px;margin:0"><img src="assets/img/ft_rankine.png" alt="Rankine square" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption><b>Rankine</b> — square · max principal stress · brittle</figcaption></figure>
+            <figure style="flex:1 1 145px;max-width:200px;margin:0"><img src="assets/img/ft_tresca.png" alt="Tresca hexagon" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption><b>Tresca</b> — hexagon · max shear · ductile (safe)</figcaption></figure>
+            <figure style="flex:1 1 145px;max-width:200px;margin:0"><img src="assets/img/ft_stvenant.png" alt="St Venant rhombus" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption><b>St.&nbsp;Venant</b> — rhombus · max principal strain</figcaption></figure>
+            <figure style="flex:1 1 145px;max-width:200px;margin:0"><img src="assets/img/ft_haigh.png" alt="Haigh ellipse" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption><b>Haigh</b> — ellipse · max total strain energy</figcaption></figure>
+            <figure style="flex:1 1 145px;max-width:200px;margin:0"><img src="assets/img/ft_vonmises.png" alt="von Mises ellipse" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption><b>von Mises</b> — ellipse · max distortion energy · ductile (accurate)</figcaption></figure>
+          </div>
+          <p>Any stress point <em>inside</em> a surface is safe; on the surface it yields. Because the <strong>Tresca hexagon lies inside the von Mises ellipse</strong>, Tresca reaches its boundary sooner → it predicts yielding at a lower load → it is the <strong>safer / more conservative</strong> theory. Von Mises is less conservative but matches experiment better.</p>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q4</span><span class="qa-q">Why does von Mises predict ductile yielding better than Tresca? (the extra-mark answer)</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <p>Total strain energy splits into a <strong>volumetric</strong> part (change of size, driven by hydrostatic stress) and a <strong>distortional</strong> part (change of shape). Experiments show hydrostatic pressure alone does <em>not</em> yield metals, so only the <strong>distortion energy</strong> should count toward yield — which is exactly what von Mises measures. That physical reasoning is why it beats both Tresca and the total-strain-energy (Haigh) theory.</p>
+          <div class="box tip"><div class="bx-t">✔ Exam tip · 2025 MCQ Q2</div>For "the criterion commonly used for ductile shafts," the expected answer is <strong>Maximum Shear Stress (Tresca)</strong>. Know both, and be able to sketch the hexagon-in-ellipse.</div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ================= STRESS ANALYSIS ================= -->
+  <section id="stress"><div class="card">
+    <div class="head"><span class="badge">2</span><h2>Stress Analysis Essentials</h2><span class="chev">▼</span></div>
+    <div class="body">
+      <p class="lead">Everything upstream of a failure theory: describing the stress state, finding principal stresses, and the thin/thick-body approximations.</p>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q5</span><span class="qa-q">Write the 3-D stress tensor and generalized Hooke's law. How many components are independent?</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <p>The stress at a point has 9 components; symmetry \(\tau_{ij}=\tau_{ji}\) leaves <strong>6 independent</strong> (3 normal + 3 shear):</p>
+          \[ \sigma_{ij}=\begin{bmatrix}\sigma_{xx}&\tau_{xy}&\tau_{xz}\\ \tau_{yx}&\sigma_{yy}&\tau_{yz}\\ \tau_{zx}&\tau_{zy}&\sigma_{zz}\end{bmatrix} \]
+          <p>Generalized Hooke's law (isotropic, linear-elastic), plus the shear modulus link:</p>
+          \[ \varepsilon_x=\frac1E\big[\sigma_x-\nu(\sigma_y+\sigma_z)\big]\ (\text{+ cyclic}),\qquad \gamma_{xy}=\frac{\tau_{xy}}{G},\qquad G=\frac{E}{2(1+\nu)} \]
+          <ul class="vars">
+            <li><b>\(\sigma,\tau\)</b> = normal and shear stresses (MPa); <b>\(\varepsilon,\gamma\)</b> = normal and shear strains</li>
+            <li><b>\(E\)</b> = Young's modulus, <b>\(\nu\)</b> = Poisson's ratio, <b>\(G\)</b> = shear modulus</li>
+          </ul>
+          <div data-fig="stresscube" data-cap="The stress element — 3 normal + 3 independent shear components (from your study notes)."></div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q6</span><span class="qa-q">Compute the principal stresses and τmax from σx, σy, τxy. Relate θ to Mohr's circle.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <p><strong>Principal planes</strong> carry no shear; their normal stresses are the principal stresses.</p>
+          \[ \sigma_{1,2}=\frac{\sigma_x+\sigma_y}{2}\pm\sqrt{\left(\frac{\sigma_x-\sigma_y}{2}\right)^2+\tau_{xy}^2},\qquad \tau_{\max}=\sqrt{\left(\frac{\sigma_x-\sigma_y}{2}\right)^2+\tau_{xy}^2} \]
+          \[ \tan 2\theta_p=\frac{2\tau_{xy}}{\sigma_x-\sigma_y} \]
+          <ul class="vars">
+            <li><b>\(\sigma_x,\sigma_y\)</b> = normal stresses on the x- and y-faces; <b>\(\tau_{xy}\)</b> = shear on those faces</li>
+            <li><b>\(\theta_p\)</b> = angle from the x-axis to a principal plane; on Mohr's circle a physical rotation \(\theta\) appears as <b>\(2\theta\)</b></li>
+            <li><b>centre</b> = \((\sigma_x+\sigma_y)/2=\sigma_{avg}\); <b>radius</b> = \(\tau_{\max}\)</li>
+          </ul>
+          <p class="use"><b>How to use:</b> the first term is the circle's centre, the square-root is its radius; \(\sigma_{1,2}=\)centre \(\pm\) radius.</p>
+          <div data-fig="mohr" data-cap="Mohr's circle (course slide): centre = σavg, radius = τmax; rotation θ on the element ↔ 2θ on the circle."></div>
+          <figure><img src="assets/img/mohr_3d.png" alt="Three Mohr's circles for a 3-D stress state" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>3-D stress → three Mohr's circles (course slide): the largest, from \(\sigma_1\) to \(\sigma_3\), sets \(\tau_{\max}=(\sigma_1-\sigma_3)/2\).</figcaption></figure>
+          <div class="box ex"><div class="bx-t">✎ Worked example</div>\(\sigma_x=40,\ \sigma_y=10,\ \tau_{xy}=30\) MPa → centre \(=25\), radius \(=\sqrt{15^2+30^2}=33.5\). So \(\sigma_1=58.5,\ \sigma_2=-8.5\) MPa, \(\tau_{\max}=33.5\) MPa.</div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q7</span><span class="qa-q">Distinguish plane stress from plane strain, with an example of each.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <div class="grid2">
+            <div class="mini"><b>Plane stress</b><span>All z-face stresses = 0. For <strong>thin</strong> bodies: plates, pressure-vessel walls, aircraft skin.</span></div>
+            <div class="mini"><b>Plane strain</b><span>All z-direction strains = 0. For <strong>thick / constrained</strong> bodies: dams, long shafts, crack tips.</span></div>
+          </div>
+          <div data-fig="str_planes" data-cap="Plane stress vs plane strain elements (from your study notes)."></div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q8</span><span class="qa-q">State the bending and torsion formulas (revision).</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          \[ \text{Flexure: }\frac{M}{I}=\frac{\sigma_b}{y}=\frac{E}{\rho}\qquad \text{Torsion: }\frac{T}{J}=\frac{\tau}{\rho}=\frac{G\phi}{L},\quad J=\frac{\pi}{32}(D^4-d^4) \]
+          <ul class="vars">
+            <li><b>\(M\)</b> = bending moment, <b>\(I\)</b> = second moment of area, <b>\(y\)</b> = distance from neutral axis, <b>\(\rho\)</b> = radius of curvature</li>
+            <li><b>\(T\)</b> = torque, <b>\(J\)</b> = polar second moment, <b>\(\phi\)</b> = angle of twist, <b>\(L\)</b> = length, <b>\(D,d\)</b> = outer/inner diameter</li>
+          </ul>
+          <div class="box ex"><div class="bx-t">✎ Worked example · hollow-shaft shear (2025 MCQ Q3)</div>\(d_i=15,\ d_o=30\) mm, \(T=100\) N·m. \(J=\frac{\pi}{32}(30^4-15^4)=74\,490\) mm⁴ → \(\tau=\dfrac{T r_o}{J}=\dfrac{100\,000\times15}{74\,490}\approx20.1\) MPa.</div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ================= FRACTURE ================= -->
+  <section id="fracture"><div class="card">
+    <div class="head"><span class="badge">3</span><h2>Fracture Mechanics &amp; LEFM</h2><span class="chev">▼</span></div>
+    <div class="body">
+      <p class="lead">A crack is a stress amplifier. Fracture mechanics adds a third design parameter — flaw size — to the usual stress-vs-strength check.</p>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q9</span><span class="qa-q">Why fracture mechanics? What does a crack actually do?</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <p>Traditional design compares <strong>stress to strength</strong> (2 parameters). A crack doesn't create stress — it <strong>intensifies</strong> the far-field stress at its tip; the sharper the tip, the higher the local stress. Fracture mechanics adds <strong>flaw size</strong> as a third parameter and asks: what is the strength as a function of crack size, and what is the largest tolerable crack?</p>
+          <div class="figrow">
+            <div data-fig="frac_appraisal" data-cap="Traditional appraisal (n = Sy/σ) vs the fracture-mechanics appraisal (n = KIC/KI) — the design shift that adds flaw size. From your study notes."></div>
+            <div data-fig="frac_cohesive" data-cap="Interatomic force vs separation — the basis of the theoretical cohesive stress. From your study notes."></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q10</span><span class="qa-q">Write KI = Yσ√(πa) and explain the symbols. Compute the critical crack length.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <p>Near the tip the stress field scales as \(K/\sqrt{2\pi r}\). The design number is the <strong>stress-intensity factor</strong> \(K_I\); fracture occurs when it reaches the <strong>fracture toughness</strong> \(K_{IC}\):</p>
+          \[ K_I=Y\,\sigma\sqrt{\pi a}\quad(\text{fracture when }K_I\ge K_{IC})\qquad\Longrightarrow\qquad a_c=\frac{1}{\pi}\left(\frac{K_{IC}}{Y\sigma}\right)^2 \]
+          <ul class="vars">
+            <li><b>\(K_I\)</b> = Mode-I stress-intensity factor (MPa·√m) — the crack "driving" quantity</li>
+            <li><b>\(Y\)</b> = geometry factor (1.0 central crack, 1.12 edge, 0.64 penny)</li>
+            <li><b>\(\sigma\)</b> = remote applied stress (MPa); <b>\(a\)</b> = crack length in <strong>metres</strong> (half-length for a central crack, full for an edge crack)</li>
+            <li><b>\(K_{IC}\)</b> = plane-strain fracture toughness (material property); <b>\(a_c\)</b> = critical crack length at which fracture begins</li>
+          </ul>
+          <p class="use"><b>How to use:</b> compute \(K_I\) for the actual crack; safe while \(K_I<K_{IC}\). Solve the second form for the largest crack the part can tolerate at a given stress.</p>
+          <div class="figrow">
+            <div data-fig="griffith" data-cap="Elliptical (Inglis) crack of semi-axes a, b and tip radius ρ = b²/a under remote stress σ. From your study notes."></div>
+            <figure><img src="assets/img/cracktip_field.png" alt="Crack-tip stress field" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>Crack-tip stress field: the \(1/\sqrt{r}\) singularity whose strength is \(K\). Course slide / FEA.</figcaption></figure>
+          </div>
+          <div class="box ex"><div class="bx-t">✎ Worked example (2025 Q12)</div>\(K_{IC}=165\) MPa·√m, \(\sigma=260\) MPa, \(Y=1.12\): \(a_c=\frac1\pi\!\left(\frac{165}{1.12\times260}\right)^2=\frac1\pi(0.567)^2\approx102\) mm.</div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q11</span><span class="qa-q">State Griffith's criterion and the Irwin–Orowan modification. Define G.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <p><strong>Griffith</strong> (ideally brittle): a crack grows when the strain energy released \(\ge\) the energy to create new crack surface. <strong>Irwin–Orowan</strong> adds plastic work \(\gamma_p\) for metals \((\gamma_s\to\gamma_s+\gamma_p,\ \gamma_p\gg\gamma_s)\) — why tough steel absorbs far more than its bond energy.</p>
+          \[ \frac{dU_s}{da}\ge\frac{dU_\gamma}{da},\quad U_s=\frac{\pi a^2\sigma^2}{E},\ U_\gamma=4\gamma_s a\ \Longrightarrow\ \sigma_f=\sqrt{\frac{2E\gamma_s}{\pi a}} \]
+          <p>The <strong>energy release rate</strong> \(G\) links energy and \(K\):</p>
+          \[ G=\frac{K_I^2}{E'}\qquad(E'=E\text{ plane stress};\ E'=E/(1-\nu^2)\text{ plane strain}) \]
+          <ul class="vars">
+            <li><b>\(U_s\)</b> = elastic strain energy released; <b>\(U_\gamma\)</b> = surface energy consumed</li>
+            <li><b>\(\gamma_s\)</b> = surface energy per unit area; <b>\(\sigma_f\)</b> = fracture stress; <b>\(G\)</b> = energy released per unit crack extension (crack "driving force")</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q12</span><span class="qa-q">Name the three crack modes and the facts the MCQs test.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <div data-fig="modes" data-cap="The three crack modes (course slide): I Opening (dominates fatigue) · II Sliding · III Tearing."></div>
+          <div class="grid2">
+            <div class="mini"><b>3 crack modes</b><span>I Opening · II Sliding · III Tearing. "Rolling" is <em>not</em> a mode — classic trick.</span></div>
+            <div class="mini"><b>\(K_{IC}\) is plane-strain</b><span>The thick-section, lowest, most conservative toughness value.</span></div>
+            <div class="mini"><b>Deeper crack ⇒ weaker</b><span>\(\sigma_f\propto1/\sqrt{a}\): double the depth ⇒ strength ×\(1/\sqrt2\).</span></div>
+            <div class="mini"><b>EPFM tools</b><span>J-integral &amp; CTOD extend analysis into the elastic-plastic regime.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ================= FATIGUE ================= -->
+  <section id="fatigue"><div class="card">
+    <div class="head"><span class="badge">4</span><h2>Fatigue <span class="star">★ very high yield</span></h2><span class="chev">▼</span></div>
+    <div class="body">
+      <p class="lead">Progressive failure under cyclic load: initiation → propagation → final fracture. The Paris-law life calculation is the single highest-yield numerical.</p>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q13</span><span class="qa-q">Define the cyclic-stress parameters σa, σm, Δσ, R.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          \[ \sigma_a=\frac{\sigma_{max}-\sigma_{min}}{2},\quad \sigma_m=\frac{\sigma_{max}+\sigma_{min}}{2},\quad \Delta\sigma=\sigma_{max}-\sigma_{min},\quad R=\frac{\sigma_{min}}{\sigma_{max}} \]
+          <ul class="vars">
+            <li><b>\(\sigma_a\)</b> = amplitude (drives fatigue); <b>\(\sigma_m\)</b> = mean stress; <b>\(\Delta\sigma\)</b> = stress range; <b>\(R\)</b> = stress ratio</li>
+            <li>Fully reversed \(R=-1\ (\sigma_m=0)\); repeated \(R=0\ (\sigma_{min}=0)\); fluctuating \(0<R<1\)</li>
+          </ul>
+          <div class="figrow">
+            <div data-fig="fatload" data-cap="Fully-reversed, repeated and fluctuating cyclic loading with σmax, σmin, σa, σm, Δσ marked. From your study notes."></div>
+            <div data-fig="fat_stages" data-cap="The stages of fatigue: crack initiation → propagation → final fast fracture. From your study notes."></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q14</span><span class="qa-q">Contrast HCF and LCF.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <div class="tablewrap"><table>
+            <tr><th></th><th>HCF (high-cycle)</th><th>LCF (low-cycle)</th></tr>
+            <tr><td>Cycles</td><td>\(>10^3\!-\!10^4\)</td><td>\(<10^3\)</td></tr>
+            <tr><td>Stress / strain</td><td>Low stress, mostly <strong>elastic</strong></td><td>High stress, significant <strong>plastic</strong></td></tr>
+            <tr><td>Governing curve</td><td><strong>S–N</strong> (Basquin)</td><td><strong>\(\varepsilon\)–N</strong> (Coffin–Manson)</td></tr>
+            <tr><td>Source</td><td>High-frequency loading (springs)</td><td>Thermal start-up / shut-down</td></tr>
+          </table></div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q15</span><span class="qa-q">Write Basquin's equation and use it (S–N curve).</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          \[ S_a=a\,N^{\,b}\ (b<0)\quad\Rightarrow\quad \frac{S_1}{S_2}=\left(\frac{N_1}{N_2}\right)^{b} \]
+          <ul class="vars">
+            <li><b>\(S_a\)</b> = stress amplitude for life \(N\); <b>\(N\)</b> = cycles to failure</li>
+            <li><b>\(a\)</b> = fatigue-strength coefficient (intercept); <b>\(b\)</b> = fatigue-strength exponent (slope, negative)</li>
+          </ul>
+          <p class="use"><b>How to use:</b> if you know one point \((S_1,N_1)\) and \(b\), the ratio form gives the strength at any other life \(N_2\) without finding \(a\).</p>
+          <div data-fig="sncurve" data-cap="S–N curve (course slide): steel shows a horizontal endurance limit; aluminium keeps falling."></div>
+          <figure><img src="assets/img/strain_life.png" alt="Strain-life curve: elastic, plastic and total" loading="lazy" style="max-width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px"><figcaption>Strain–life diagram (course slide): elastic (Basquin) + plastic (Coffin–Manson) lines sum to the total; their crossing = transition life separating LCF from HCF.</figcaption></figure>
+          <div class="box ex"><div class="bx-t">✎ Worked example (2025 Q11)</div>\(S=400\) MPa at \(N=10^5\), \(b=-0.15\). At \(10^6\): \(S_2=400\times(10)^{-0.15}=400\times0.708\approx283\) MPa.</div>
+          <div class="box beyond"><div class="bx-t">➕ Endurance limit</div>Steels have a knee at \(\approx0.5\,S_{ut}\); <strong>Al and Cu have no true endurance limit</strong> — quote a fatigue strength at a stated \(N\) instead.</div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q16</span><span class="qa-q">Write Paris' law and integrate it for crack-growth life.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <p>Region II of the \(da/dN\)–\(\Delta K\) curve is linear on log–log axes. <strong>Use the stress range \(\Delta\sigma\)</strong>:</p>
+          \[ \Delta K=Y\,\Delta\sigma\sqrt{\pi a},\qquad \frac{da}{dN}=C(\Delta K)^m \]
+          \[ N=\int_{a_i}^{a_f}\frac{da}{C\,(Y\Delta\sigma\sqrt{\pi a})^m}\ \xrightarrow{\,m=3\,}\ N=\frac{2\big[a_i^{-1/2}-a_f^{-1/2}\big]}{C\,(Y\Delta\sigma\sqrt{\pi})^{3}} \]
+          <ul class="vars">
+            <li><b>\(da/dN\)</b> = crack growth per cycle (m/cycle); <b>\(\Delta K\)</b> = stress-intensity range</li>
+            <li><b>\(C,m\)</b> = Paris material constants (\(m\approx3\) for steels); <b>\(a_i,a_f\)</b> = initial &amp; final (critical) crack lengths</li>
+          </ul>
+          <p class="use"><b>How to use:</b> get \(a_f=a_c\) from \(K_{IC}\), then plug into the \(m=3\) result. Keep \(a\) in metres and use \(\Delta\sigma\), never \(\sigma_{max}\).</p>
+          <div data-fig="dadn" data-cap="Sigmoidal da/dN vs ΔK (course slide): Region I threshold, II Paris régime, III unstable fast fracture."></div>
+          <div class="box warn"><div class="bx-t">⚠ Number-one mistake</div>Using \(\sigma_{max}\) instead of \(\Delta\sigma\) in \(\Delta K\), and forgetting the \(m=3\) integral produces \(a^{-1/2}\) terms.</div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q17</span><span class="qa-q">State Miner's rule and the four fatigue-design strategies.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          \[ D=\sum_i\frac{n_i}{N_i};\qquad\text{failure when }D\ge1\quad(\text{blocks to failure}=1/D) \]
+          <ul class="vars">
+            <li><b>\(n_i\)</b> = cycles applied at stress level \(i\); <b>\(N_i\)</b> = cycles to failure at that level; <b>\(D\)</b> = accumulated damage</li>
+          </ul>
+          <div class="grid2">
+            <div class="mini"><b>Four design philosophies</b><span>Infinite-life · Safe-life · Fail-safe · Damage-tolerant.</span></div>
+            <div class="mini"><b>Improve fatigue life</b><span>Compressive residual stress (shot-peening), smooth surface finish, remove stress raisers.</span></div>
+          </div>
+          <div data-fig="fat_surface" data-cap="Surface-finish effect on fatigue strength: rougher / as-forged surfaces sharply lower the endurance limit. From your study notes."></div>
+          <div class="box beyond"><div class="bx-t">➕ Miner is only approximate</div>It ignores load sequence (high-then-low ≠ low-then-high). Real failures scatter over \(D\approx0.7\!-\!2.2\); saying so earns an extra mark.</div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ================= RELIABILITY / DFMA ================= -->
+  <section id="reliability"><div class="card">
+    <div class="head"><span class="badge">5</span><h2>Reliability, DFMA &amp; Ergonomics</h2><span class="chev">▼</span></div>
+    <div class="body">
+      <p class="lead">All of Q4 lives here: reliability maths (Normal &amp; Weibull, series/parallel), the bathtub curve, and DFMA / human-factors one-liners.</p>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q18</span><span class="qa-q">Define R(t), the hazard rate, MTTF and MTBF.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          \[ R(t)=1-F(t),\qquad \lambda(t)=\frac{f(t)}{R(t)},\qquad \lambda=\frac{\text{failures}}{\text{operating time}} \]
+          \[ \text{MTTF}=\int_0^\infty R(t)\,dt=\frac1\lambda\ (\text{non-repairable}),\qquad \text{MTBF}=\frac1\lambda\ (\text{repairable}) \]
+          <ul class="vars">
+            <li><b>\(R(t)\)</b> = reliability (probability of surviving to \(t\)); <b>\(F(t)\)</b> = unreliability (CDF); <b>\(f(t)\)</b> = failure PDF</li>
+            <li><b>\(\lambda\)</b> = hazard / failure rate; <b>MTTF</b> = mean time to failure; <b>MTBF</b> = mean time between failures</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q19</span><span class="qa-q">Give the three distributions and the series/parallel system rules.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          \[ \text{Exponential: }R=e^{-\lambda t}\qquad \text{Normal: }R=1-\Phi\!\left(\tfrac{t-\mu}{\sigma}\right)\qquad \text{Weibull: }R=e^{-(t/\theta)^m} \]
+          \[ \text{Series (all needed): }R_s=\prod R_i\qquad \text{Parallel (any one): }R_s=1-\prod(1-R_i) \]
+          <ul class="vars">
+            <li><b>\(\mu,\sigma\)</b> = mean &amp; std-dev (Normal); <b>\(\theta\)</b> = characteristic life, <b>\(m\ (\equiv\beta)\)</b> = Weibull shape</li>
+          </ul>
+          <div data-fig="rel_series" data-cap="Series vs parallel (redundant) system reliability block diagrams. From your study notes."></div>
+          <div class="box ex"><div class="bx-t">✎ Worked example</div>Units 0.95, 0.85, 0.75 → Series \(R=0.61\); Parallel \(R=1-(0.05)(0.15)(0.25)=0.998\). Redundancy transforms reliability.</div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q20</span><span class="qa-q">Sketch the bathtub curve and do a Weibull calculation.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <div class="figrow">
+            <div data-fig="bathtub" data-cap="Bathtub curve (course slide): hazard rate λ(t) across infant-mortality, useful-life and wear-out regions."></div>
+            <div data-fig="rel_weibull" data-cap="Weibull PDF for different shape parameters m (≡ β): one distribution flexes to fit all three regions. From your study notes."></div>
+          </div>
+          <div class="box mem"><div class="bx-t">🧠 Weibull shape m</div>\(m<1\) → decreasing hazard (infant mortality); \(m=1\) → constant (exponential, useful life); \(m>1\) → increasing (wear-out).</div>
+          <div class="box ex"><div class="bx-t">✎ Worked example (2025 MCQ Q16)</div>\(t=1450,\ \theta=7500,\ m=0.7\): \(R=e^{-(1450/7500)^{0.7}}=e^{-0.314}\approx72.8\%\).</div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q21</span><span class="qa-q">What is stress–strength interference, and how does DFR use it?</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <p>Both stress and strength are <em>distributions</em>, not single values. Where the tails overlap, an item sees a stress above its strength → failure. The <strong>overlap area is the probability of failure</strong>; the gap between the means is the safety margin.</p>
+          <div data-fig="rel_interf" data-cap="Stress–strength interference: the overlap of the two distributions is the probability of failure; the gap is the safety margin. From your study notes."></div>
+          <p class="use"><b>DFR levers:</b> increase the margin, derate, add redundancy, reduce scatter (better QC) — all shrink the overlap.</p>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q22</span><span class="qa-q">Give the DFMA guidelines and the four human-factor types.</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          <div class="grid2">
+            <div class="mini"><b>Concurrent engineering</b><span>Design product + process together, early, in parallel — cuts cost &amp; time-to-market.</span></div>
+            <div class="mini"><b>DFM</b><span>Minimize parts, standardize, avoid tight tolerances, design for the chosen process.</span></div>
+            <div class="mini"><b>DFA</b><span>Ease insertion, self-locate, symmetry or clear asymmetry, top-down assembly, no reorientation.</span></div>
+            <div class="mini"><b>Human factors (4)</b><span>Anthropometric (size) · Physiological (senses) · Psychological (mental) · Ergonomic (whole system).</span></div>
+          </div>
+          <div class="figrow">
+            <div data-fig="ergo_factors" data-cap="The four forms of human factors in design. From your study notes."></div>
+            <div data-fig="ergo_mm" data-cap="The man–machine system: human (sense → process → control) and machine (display → operation → control) coupled through the interface. From your study notes."></div>
+          </div>
+          <div class="box tip"><div class="bx-t">✔ Two rules examiners love</div>Letter height (mm) = viewing distance (mm) / 200; <strong>clockwise = increase</strong>. Size reach for the 5th-percentile user, clearance for the 95th.</div>
+        </div>
+      </div>
+
+      <div class="qa"><div class="qa-head"><span class="qa-num">Q23</span><span class="qa-q">Design factor vs factor of safety — what's the difference?</span><span class="qa-toggle">Show answer ▾</span></div>
+        <div class="qa-body">
+          \[ n=\frac{S}{\sigma}=\frac{\text{Strength}}{\text{Stress}} \]
+          <p>The <strong>design factor \(n_d\)</strong> is the target chosen <em>before</em> sizing, to cover uncertainty in material, load and analysis. The <strong>factor of safety</strong> is the margin you actually end up with <em>after</em> rounding dimensions up to standard sizes. Stress and strength must be the same type, units and location.</p>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ================= FORMULA SHEET ================= -->
+  <section id="formulas"><div class="card">
+    <div class="head"><span class="badge">Σ</span><h2>Master formula sheet — explained</h2><span class="chev">▼</span></div>
+    <div class="body">
+      <p class="lead">Every core formula with what each symbol means, when to reach for it, and a one-line worked check.</p>
+
+      <div class="fcard">
+        <div class="ft">Factor of safety</div>
+        \[ n=\frac{S}{\sigma} \]
+        <ul class="vars"><li><b>\(S\)</b> = strength (yield/ultimate), <b>\(\sigma\)</b> = working stress, <b>\(n\)</b> = margin</li></ul>
+        <p class="use"><b>Use:</b> the universal safety check — keep \(n>1\) (typically 1.5–3). <em>e.g.</em> \(S=250,\ \sigma=100\Rightarrow n=2.5\).</p>
+      </div>
+
+      <div class="fcard">
+        <div class="ft">Principal stress &amp; max shear</div>
+        \[ \sigma_{1,2}=\frac{\sigma_x+\sigma_y}{2}\pm\sqrt{\left(\tfrac{\sigma_x-\sigma_y}{2}\right)^2+\tau_{xy}^2},\qquad \tau_{\max}=\frac{\sigma_1-\sigma_3}{2} \]
+        <ul class="vars"><li>centre \(=\sigma_{avg}\), radius \(=\) the square-root term \(=\tau_{\max}\)</li></ul>
+        <p class="use"><b>Use:</b> reduce any 2-D state to \(\sigma_1,\sigma_2\) before applying a failure theory.</p>
+      </div>
+
+      <div class="fcard">
+        <div class="ft">Yield criteria</div>
+        \[ \text{Tresca: }\sigma_1-\sigma_3=\sigma_y\qquad \text{von Mises: }\sqrt{\sigma_1^2-\sigma_1\sigma_2+\sigma_2^2}=\sigma_y \]
+        <ul class="vars"><li><b>\(\sigma_y\)</b> = tensile yield strength; von Mises form shown for \(\sigma_3=0\)</li></ul>
+        <p class="use"><b>Use:</b> ductile parts. Tresca = safe/simple; von Mises = accurate.</p>
+      </div>
+
+      <div class="fcard">
+        <div class="ft">Torsion &amp; polar moment</div>
+        \[ \frac{T}{J}=\frac{\tau}{\rho}=\frac{G\phi}{L},\qquad J=\frac{\pi}{32}(D^4-d^4) \]
+        <ul class="vars"><li><b>\(T\)</b> torque, <b>\(J\)</b> polar 2nd moment, <b>\(\rho\)</b> radius to the point, <b>\(\phi\)</b> twist, <b>\(L\)</b> length</li></ul>
+        <p class="use"><b>Use:</b> shaft shear \(\tau=T r_o/J\); twist \(\phi=TL/(GJ)\).</p>
+      </div>
+
+      <div class="fcard">
+        <div class="ft">Stress intensity &amp; critical crack</div>
+        \[ K_I=Y\sigma\sqrt{\pi a},\qquad a_c=\frac1\pi\!\left(\frac{K_{IC}}{Y\sigma}\right)^2,\qquad G=\frac{K_I^2}{E'} \]
+        <ul class="vars"><li><b>\(Y\)</b> geometry (1.0/1.12/0.64), <b>\(a\)</b> crack length in <strong>metres</strong>, <b>\(K_{IC}\)</b> toughness, <b>\(E'\)</b> = \(E\) (plane stress) or \(E/(1-\nu^2)\) (plane strain)</li></ul>
+        <p class="use"><b>Use:</b> fracture check \(K_I<K_{IC}\); \(a_c\) = largest tolerable crack. Griffith \(\sigma_f=\sqrt{2E\gamma/\pi a}\).</p>
+      </div>
+
+      <div class="fcard">
+        <div class="ft">Fatigue — Basquin, Paris, Miner</div>
+        \[ S_a=aN^b,\qquad \Delta K=Y\Delta\sigma\sqrt{\pi a},\qquad \frac{da}{dN}=C(\Delta K)^m,\qquad \sum\frac{n_i}{N_i}=1 \]
+        \[ \text{Paris life }(m=3):\ N=\frac{2\,(a_i^{-1/2}-a_f^{-1/2})}{C(Y\Delta\sigma\sqrt{\pi})^3},\qquad b=\frac{\log(S_1/S_2)}{\log(N_1/N_2)} \]
+        <ul class="vars"><li>Always use the <strong>range</strong> \(\Delta\sigma\) and \(a\) in metres; endurance ratio \(\approx0.3\!-\!0.4\)</li></ul>
+        <p class="use"><b>Use:</b> Basquin for HCF life; Paris integral for crack-growth life; Miner for variable amplitude.</p>
+      </div>
+
+      <div class="fcard">
+        <div class="ft">Reliability</div>
+        \[ R=1-F,\quad \lambda=\frac{f}{R},\quad \text{MTTF}=\frac1\lambda,\quad R_{exp}=e^{-\lambda t},\quad R_{Weib}=e^{-(t/\theta)^m} \]
+        \[ \text{Series }R=\prod R_i,\qquad \text{Parallel }R=1-\prod(1-R_i) \]
+        <ul class="vars"><li><b>\(\theta\)</b> characteristic life, <b>\(m\)</b> Weibull shape; Normal \(z=(t-\mu)/\sigma,\ R=1-\Phi(z)\)</li></ul>
+        <p class="use"><b>Use:</b> pick exponential for random failures, Weibull for anything, series for "all must work," parallel for redundancy.</p>
+      </div>
+
+      <div class="fcard">
+        <div class="ft">Ergonomics</div>
+        \[ \text{Letter height (mm)}=\frac{\text{viewing distance (mm)}}{200} \]
+        <p class="use"><b>Use:</b> size displays; pair with "clockwise = increase" for controls.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- ================= CHECKLIST ================= -->
+  <section id="checklist"><div class="card">
+    <div class="head"><span class="badge">✓</span><h2>Last-night revision checklist</h2><span class="chev">▼</span></div>
+    <div class="body">
+      <p class="ck-note">Tick each once you can do it from memory. Your ticks are saved in this browser.</p>
+      <ul class="checklist" id="ckList">
+        <li><label><input type="checkbox"><span>State the five failure theories; which for ductile / brittle; write the Tresca and von Mises criteria.</span></label></li>
+        <li><label><input type="checkbox"><span>Sketch the Tresca hexagon inside the von Mises ellipse and say which is conservative and why.</span></label></li>
+        <li><label><input type="checkbox"><span>Write generalized Hooke's law and the stress tensor (6 independent components).</span></label></li>
+        <li><label><input type="checkbox"><span>Compute principal stresses and τmax from σx, σy, τxy; relate θ to 2θ on Mohr's circle.</span></label></li>
+        <li><label><input type="checkbox"><span>Distinguish plane stress from plane strain with an example of each.</span></label></li>
+        <li><label><input type="checkbox"><span>Write KI = Yσ√(πa) and compute the critical crack length ac.</span></label></li>
+        <li><label><input type="checkbox"><span>State Griffith and the Irwin–Orowan modification; define G and its link to K.</span></label></li>
+        <li><label><input type="checkbox"><span>Name the three crack modes (Opening / Sliding / Tearing) — "rolling" is not one.</span></label></li>
+        <li><label><input type="checkbox"><span>Contrast HCF vs LCF; write Basquin and integrate Paris' law (Δσ, a in metres).</span></label></li>
+        <li><label><input type="checkbox"><span>Apply Miner's rule; find blocks-to-failure = 1/D.</span></label></li>
+        <li><label><input type="checkbox"><span>List the four fatigue-design strategies (infinite / safe / fail-safe / damage-tolerant).</span></label></li>
+        <li><label><input type="checkbox"><span>Do a Normal and a Weibull reliability calc; series vs parallel; sketch the bathtub curve; define λ, MTTF, MTBF.</span></label></li>
+        <li><label><input type="checkbox"><span>Explain stress–strength interference and the DFMA / human-factor guidelines.</span></label></li>
+      </ul>
+      <div class="box tip"><div class="bx-t">✔ Final exam-hall reminder</div>Attempt <strong>every</strong> part. For each numerical: formula → substitute in SI → box the answer with units. For "predict the failure mode," compute both the fracture and yield loads — the <strong>smaller governs</strong>. Good luck, Sukalpa! 🍀</div>
+    </div>
+  </div></section>
+
+  <p style="text-align:center;color:var(--muted);font-size:12.5px;margin-top:24px">
+    Companion to the <a href="MEPP436 - Interactive Study Notes.html">Interactive Study Notes</a> ·
+    <a href="study-guide.html">full Study Guide</a> ·
+    <a href="model-exam.html">Model Exam</a>. Figures are your own extracted course-slide and textbook images.
+  </p>
+</div>
+
+<button class="back-top" id="backTop" title="Back to top">↑</button>
+
+<!-- real slide/textbook figures (student's own extracted course materials) -->
+<script src="assets/slidefigs.js"></script>
+<script src="assets/app.js"></script>
+<script>
+// render every data-fig placeholder using the shared figure resolver (window.figInner)
+document.querySelectorAll('[data-fig]').forEach(function(el){
+  var key=el.getAttribute('data-fig'), cap=el.getAttribute('data-cap');
+  var inner=(window.figInner?window.figInner(key):'');
+  if(!inner){ el.style.display='none'; return; }
+  el.innerHTML='<figure>'+inner+(cap?'<figcaption>'+cap+'</figcaption>':'')+'</figure>';
+});
+// expandable Q&A
+function setQA(qa,open){qa.classList.toggle('open',open);var t=qa.querySelector('.qa-toggle');if(t)t.textContent=open?'Hide answer ▴':'Show answer ▾';}
+document.querySelectorAll('.qa-head').forEach(function(h){
+  h.addEventListener('click',function(){setQA(h.parentElement,!h.parentElement.classList.contains('open'));});
+});
+document.getElementById('expandAll').addEventListener('click',function(){document.querySelectorAll('.qa').forEach(function(q){setQA(q,true);});});
+document.getElementById('collapseAll').addEventListener('click',function(){document.querySelectorAll('.qa').forEach(function(q){setQA(q,false);});});
+// collapse cards on header click
+document.querySelectorAll('.card > .head').forEach(function(h){
+  h.addEventListener('click',function(){h.parentElement.classList.toggle('collapsed');});
+});
+// theme toggle
+var root=document.documentElement, tb=document.getElementById('themeBtn');
+tb.addEventListener('click',function(){var dark=root.getAttribute('data-theme')==='dark';root.setAttribute('data-theme',dark?'light':'dark');tb.textContent=dark?'🌙 Dark':'☀️ Light';});
+// back to top
+var bt=document.getElementById('backTop');
+addEventListener('scroll',function(){bt.classList.toggle('show',scrollY>500);});
+bt.addEventListener('click',function(){scrollTo({top:0,behavior:'smooth'});});
+// checklist persistence
+try{
+  var boxes=document.querySelectorAll('#ckList input');
+  var saved=JSON.parse(localStorage.getItem('mepp436_ck')||'[]');
+  boxes.forEach(function(b,i){ b.checked=!!saved[i]; b.addEventListener('change',function(){
+    var st=[];boxes.forEach(function(x){st.push(x.checked);});
+    localStorage.setItem('mepp436_ck',JSON.stringify(st));
+  });});
+}catch(e){}
+</script>
+</body>
+</html>

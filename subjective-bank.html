@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subjective Bank · MEPP 436</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar"><div class="inner">
+  <span class="brand"><span class="code">MEPP 436</span> Advanced Machine Design</span>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="study-guide.html">Study Guide</a>
+    <a href="objective-bank.html">Objective Bank</a>
+    <a href="subjective-bank.html" class="active">Subjective Bank</a>
+    <a href="last-minute-guide.html">Last-Minute</a>
+    <a href="model-exam.html">Model Exam</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="kicker">Section B · Model answers, derivations &amp; worked numericals</div>
+    <h1>Subjective Question Bank</h1>
+    <p>Organised by the four Section-B blocks, exactly as the paper is set. Each question shows its marks, its source (past paper / internal / model), and a likelihood rating (★). Click any question to reveal a full model answer or a step-by-step numerical.</p>
+  </section>
+
+  <div class="box beyond"><span class="lbl">★ Most-recent paper — First Internal Assessment, 25 May 2026 (FM 10, 1 hour)</span>
+    <b>Q1</b> plane stress vs plane strain · <b>Q2</b> fracture stress of a “similar sheet” (Juvinall Ch. 6 + Shukla) · <b>Q3</b> S-N relation with C<sub>L</sub>/C<sub>G</sub>/C<sub>S</sub> factors (Juvinall Ch. 8) · <b>Q4</b> Paris-law crack-propagation life (Shukla Ch. 5). All four are worked below and tagged <span class="chip out" style="background:#fde8cf;border-color:#f0c088;color:#9a4a06">★ Internal 2026</span>. Filter to “Internal 2026” to drill just these.</div>
+
+  <div class="toolbar">
+    <span style="font-weight:700;color:var(--navy)">Block:</span>
+    <button class="filterbtn on" data-b="ALL">All blocks</button>
+    <button class="filterbtn" data-b="B">Q1 · Stress &amp; failure</button>
+    <button class="filterbtn" data-b="C">Q2 · Fracture</button>
+    <button class="filterbtn" data-b="D">Q3 · Fatigue</button>
+    <button class="filterbtn" data-b="MIX">Q4 · DFMA/Reliability/Ergonomics</button>
+  </div>
+  <div class="toolbar">
+    <span style="font-weight:700;color:var(--navy)">Source:</span>
+    <button class="filterbtn on" data-s="ALL">All</button>
+    <button class="filterbtn" data-s="internal26">★ Internal 2026</button>
+    <button class="filterbtn" data-s="feb25">Feb 2025</button>
+    <button class="filterbtn" data-s="jul25">July 2025</button>
+    <button class="filterbtn" data-s="numerical">Numericals</button>
+    <button class="filterbtn" data-s="derivation">Derivations</button>
+    <button class="btn sm" id="expandAll" style="margin-left:auto">Expand all</button>
+    <button class="btn sm ghost" id="collapseAll">Collapse all</button>
+  </div>
+
+  <div id="bank"></div>
+
+  <div class="footer">Practise these under time (≈30 min per Section-B question), then assemble a full paper in the <a href="model-exam.html">Model Exam</a>.</div>
+</main>
+
+<button class="back-top" onclick="scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script src="assets/data.js"></script>
+<script src="assets/slidefigs.js"></script>
+<script src="assets/app.js"></script>
+<script>
+(function(){
+  var bank=document.getElementById('bank');
+  var curBlock='ALL', curSrc='ALL';
+  var blockName={B:'Q1 — Elasticity, stress analysis &amp; failure theories',
+                 C:'Q2 — Fracture mechanics', D:'Q3 — Material fatigue',
+                 MIX:'Q4 — DFMA, reliability &amp; ergonomics'};
+  function inBlock(p){
+    if(curBlock==='ALL') return true;
+    if(curBlock==='MIX') return (p.block==='E'||p.block==='F'||p.block==='G');
+    return p.block===curBlock;
+  }
+  function inSrc(p){ return curSrc==='ALL' || (p.tags&&p.tags.indexOf(curSrc)>=0); }
+  function draw(){
+    bank.innerHTML='';
+    var groups = curBlock==='ALL' ? ['B','C','D','MIX'] : [curBlock];
+    var any=false;
+    groups.forEach(function(g){
+      var list=window.PARTS.filter(function(p){
+        var gb = g==='MIX' ? (p.block==='E'||p.block==='F'||p.block==='G') : p.block===g;
+        return gb && inSrc(p);
+      });
+      // sort: internal first, then by likelihood desc
+      list.sort(function(a,b){
+        var ai=(a.tags||[]).indexOf('internal26')>=0?0:1, bi=(b.tags||[]).indexOf('internal26')>=0?0:1;
+        if(ai!==bi) return ai-bi; return (b.like||0)-(a.like||0);
+      });
+      if(!list.length) return;
+      any=true;
+      var h=document.createElement('h2'); h.className='sec';
+      h.innerHTML='<span class="num">'+({B:'Q1',C:'Q2',D:'Q3',MIX:'Q4'}[g])+'</span> '+blockName[g]+
+        ' <span class="counter" style="font-size:14px">'+list.length+' questions</span>';
+      bank.appendChild(h);
+      var holder=document.createElement('div');
+      bank.appendChild(holder);
+      window.renderSubjective(holder, list.map(function(p,i){p.qlabel=({B:'Q1',C:'Q2',D:'Q3',MIX:'Q4'}[g])+'.'+(i+1);return p;}));
+    });
+    if(!any){ bank.innerHTML='<div class="card">No questions match this filter.</div>'; }
+  }
+  document.querySelectorAll('.filterbtn[data-b]').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.filterbtn[data-b]').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); curBlock=b.dataset.b; draw();
+    });
+  });
+  document.querySelectorAll('.filterbtn[data-s]').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.filterbtn[data-s]').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); curSrc=b.dataset.s; draw();
+    });
+  });
+  document.getElementById('expandAll').addEventListener('click',function(){
+    document.querySelectorAll('.subq').forEach(function(s){s.classList.add('open');
+      var t=s.querySelector('.toggle'); if(t)t.textContent='Hide answer ▴';});
+  });
+  document.getElementById('collapseAll').addEventListener('click',function(){
+    document.querySelectorAll('.subq').forEach(function(s){s.classList.remove('open');
+      var t=s.querySelector('.toggle'); if(t)t.textContent='Show answer ▾';});
+  });
+  draw();
+})();
+</script>
+</body>
+</html>

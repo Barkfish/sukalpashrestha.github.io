@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Objective Bank · MEPP 436</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar"><div class="inner">
+  <span class="brand"><span class="code">MEPP 436</span> Advanced Machine Design</span>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="study-guide.html">Study Guide</a>
+    <a href="objective-bank.html" class="active">Objective Bank</a>
+    <a href="subjective-bank.html">Subjective Bank</a>
+    <a href="last-minute-guide.html">Last-Minute</a>
+    <a href="model-exam.html">Model Exam</a>
+  </nav>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="kicker">Section A · Interactive MCQ Bank</div>
+    <h1>Objective Question Bank</h1>
+    <p>Every past-paper MCQ (Feb 2025 + July 2025) plus model questions across all seven topics. <b>Click an option</b> — you'll see whether your choice was right, why, and the correct answer with a one-line reason. Filter by topic and track your score.</p>
+  </section>
+
+  <div class="toolbar">
+    <span style="font-weight:700;color:var(--navy)">Topic:</span>
+    <button class="filterbtn on" data-b="ALL">All</button>
+    <button class="filterbtn" data-b="A">A · Design &amp; materials</button>
+    <button class="filterbtn" data-b="B">B · Stress &amp; failure</button>
+    <button class="filterbtn" data-b="C">C · Fracture</button>
+    <button class="filterbtn" data-b="D">D · Fatigue</button>
+    <button class="filterbtn" data-b="E">E · DFMA</button>
+    <button class="filterbtn" data-b="F">F · Reliability</button>
+    <button class="filterbtn" data-b="G">G · Ergonomics</button>
+  </div>
+  <div class="toolbar">
+    <label class="small" style="display:flex;align-items:center;gap:6px;font-weight:700;color:var(--navy)">Sort by:
+      <select id="sortSel">
+        <option value="orig">Original order</option>
+        <option value="likely">★ Most likely to come</option>
+        <option value="repeated">🔁 Most repeated topics</option>
+        <option value="shuffle">🔀 Shuffle</option>
+      </select>
+    </label>
+    <button class="btn sm ghost" id="resetBtn">↺ Reset answers</button>
+    <label class="small" style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="seenOnly"> Past-paper questions only</label>
+    <span class="counter scorebar" id="score"></span>
+  </div>
+  <p class="small" id="sortNote" style="margin:2px 0 10px;color:var(--muted)"></p>
+
+  <div id="bank"></div>
+
+  <div class="footer">Tip: a wrong answer is worth more than a right one — read the reason, then re-test with <b>Shuffle</b>. Ready for full papers? Try the <a href="model-exam.html">Model Exam</a>.</div>
+</main>
+
+<button class="back-top" onclick="scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+(function(){
+  var bank=document.getElementById('bank');
+  var score=document.getElementById('score');
+  var note=document.getElementById('sortNote');
+  var curBlock='ALL', sortMode='orig', seenOnly=false;
+
+  // --- ranking signals derived from the real data (no per-question guesses) ---
+  var PAST={feb25:1,jul25:1};                       // questions that actually appeared in a past paper
+  var TAGW={feb25:100,jul25:100,model:40,out:10};   // source weight
+  var blockFreq={};                                  // how many past-paper Qs fall in each topic block
+  window.OBJECTIVE.forEach(function(q){ if(PAST[q.tag]) blockFreq[q.block]=(blockFreq[q.block]||0)+1; });
+  function likelihood(q){ return (TAGW[q.tag]||30) + (blockFreq[q.block]||0); }        // real exam Qs + hot topics first
+  function repeatScore(q){ return (blockFreq[q.block]||0)*100 + (PAST[q.tag]?50:0) + (TAGW[q.tag]||30); } // most-tested topics clustered
+
+  var NOTES={
+    orig:'Questions in their original bank order.',
+    likely:'★ Ranked so real past-paper questions (Feb 2025 / July 2025) and the most-tested topics rise to the top — study these first.',
+    repeated:'🔁 Grouped so the most-repeated exam topics come first, with past-paper questions ahead of model ones. Chips show each question’s source.',
+    shuffle:'🔀 Randomised each time — good for a mock drill.'
+  };
+
+  function bySort(list){
+    var arr=list.slice();
+    if(sortMode==='shuffle') return window.U.shuffle(arr);
+    if(sortMode==='likely')  return arr.sort(function(a,b){return likelihood(b)-likelihood(a);});
+    if(sortMode==='repeated')return arr.sort(function(a,b){return repeatScore(b)-repeatScore(a);});
+    return arr; // original order
+  }
+  function current(){
+    var list=window.OBJECTIVE.slice();
+    if(curBlock!=='ALL') list=list.filter(q=>q.block===curBlock);
+    if(seenOnly) list=list.filter(q=>q.tag==='feb25'||q.tag==='jul25');
+    return bySort(list);
+  }
+  function draw(){ note.textContent=NOTES[sortMode]||''; window.renderObjective(bank, current(), {scoreEl:score}); }
+  document.querySelectorAll('.filterbtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.filterbtn').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); curBlock=b.dataset.b; draw();
+    });
+  });
+  document.getElementById('sortSel').addEventListener('change',function(e){sortMode=e.target.value;draw();});
+  document.getElementById('resetBtn').addEventListener('click',draw);
+  document.getElementById('seenOnly').addEventListener('change',function(e){seenOnly=e.target.checked;draw();});
+  draw();
+})();
+</script>
+</body>
+</html>
